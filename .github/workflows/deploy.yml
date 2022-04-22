@@ -17,7 +17,7 @@ jobs:
         with:
           deno-version: v1.x
 
-      - name: build
+      - name: lint
         run: |
           deno lint
           deno fmt --check
@@ -31,7 +31,7 @@ jobs:
         with:
           deno-version: v1.x
 
-      - name: build
+      - name: test
         run: deno test --doc
 
   build:
@@ -67,6 +67,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: dist
+          path: dist
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
