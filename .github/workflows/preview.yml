@@ -49,8 +49,8 @@ jobs:
         run: deno task build
 
       - uses: actions/upload-artifact@v3
-        if-no-files-found: error
         with:
+          if-no-files-found: error
           name: dist
           path: dist
 
