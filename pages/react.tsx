@@ -1,8 +1,18 @@
 import { MDXContent } from "https://esm.sh/@types/mdx/types.d.ts";
 import MDXComponents from "~/components/mdx_components.tsx";
+import TOC from "~/components/table_of_contents.tsx";
+import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
 
-export default function Index({ Page }: { Page?: MDXContent }): JSX.Element {
+export default function Index(
+  { Page, pageProps }: {
+    Page?: MDXContent;
+    pageProps: {
+      tableOfContents?: TableOfContents;
+    };
+  },
+): JSX.Element {
   if (!Page) return <></>;
+
   return (
     <>
       <head>
@@ -26,7 +36,7 @@ export default function Index({ Page }: { Page?: MDXContent }): JSX.Element {
       </header>
 
       <main className="container relative mx-auto flex justify-center">
-        <aside className="hidden sticky top-[50px] md:block w-76 min-h-full flex-none p-4">
+        <aside className="hidden sticky top-[50px] md:block w-76 max-h-screen h-full flex-none p-4">
           <nav>
             <ul>
               <li>
@@ -39,13 +49,13 @@ export default function Index({ Page }: { Page?: MDXContent }): JSX.Element {
         </aside>
 
         <article className="prose max-w-prose px-2 lg:px-8 py-4 overflow-x-scroll">
-          <Page
-            components={MDXComponents}
-          />
+          <Page components={MDXComponents} />
         </article>
 
-        <aside className="hidden xl:block w-76 flex-none h-100 p-4">
-          On this page
+        <aside className="hidden sticky top-[50px] xl:block w-76 flex-none max-h-screen h-full p-4">
+          <h3>On this page</h3>
+
+          <TOC children={pageProps.tableOfContents} />
         </aside>
       </main>
     </>
