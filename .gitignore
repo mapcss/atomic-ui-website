@@ -3,3 +3,4 @@ Thumbs.db
 .aleph/
 dist/
 style/map.css
+*.log
