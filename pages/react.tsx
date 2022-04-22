@@ -25,7 +25,7 @@ export default function Index(
           href="~/style/highlight.css"
         />
       </head>
-      <header className="px-4 py-2 sticky top-0 bg-white z-1 border-b border-gray-200">
+      <header className="px-4 py-2 sticky top-0 backdrop-blur-md z-1 border-b bg-white/50 border-white/30">
         <div className="container mx-auto 2xl:px-34">
           <a href="/">
             <h1 className="xl:px-4 text-xl leading-relaxed">
