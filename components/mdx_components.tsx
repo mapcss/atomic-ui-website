@@ -15,7 +15,8 @@ const MDXComponents: MDXComponents = {
   h2: (props) => {
     return createElement("h2", { ...props, className: "text-xl mt-10" });
   },
-  pre: (props) => createElement("pre", { className: "relative", ...props }),
+  pre: (props) =>
+    createElement("pre", { className: "relative group", ...props }),
   code: (props) => {
     if (isString(props.children)) {
       return createElement("code", {
@@ -37,7 +38,10 @@ const MDXComponents: MDXComponents = {
     return (
       <>
         <code {...props} ref={ref} />
-        <div role="toolbar" className="absolute bottom-0 right-0 p-2">
+        <div
+          role="toolbar"
+          className="absolute opacity-30 transition-opacity duration-500 group-hover:opacity-100 bottom-0 right-0 p-2"
+        >
           <button
             onClick={handleClick}
             className="border transition duration-300 focus:outline-none focus:ring backdrop-blur bg-white/20 text-white border-white/20 p-1 rounded-md"

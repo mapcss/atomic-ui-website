@@ -111,7 +111,7 @@ function removeHljsClassName(value: ReactNode): ReactNode {
       }>,
       {
         children: grandChildren,
-        className: "p-3.5",
+        className: "p-3.5 group",
       },
     );
     return newChild;
