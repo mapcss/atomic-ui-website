@@ -1,6 +1,5 @@
-import { Children, ReactNode } from "react";
 import { MDXContent } from "https://esm.sh/@types/mdx/types.d.ts";
-import { isReactElement, isString } from "~/deps.ts";
+import MDXComponents from "~/components/mdx_components.tsx";
 
 export default function Index({ Page }: { Page?: MDXContent }): JSX.Element {
   if (!Page) return <></>;
@@ -27,12 +26,12 @@ export default function Index({ Page }: { Page?: MDXContent }): JSX.Element {
       </header>
 
       <main className="container relative mx-auto flex justify-center">
-        <aside className="hidden sticky top-[50px] md:block w-76 min-h-full flex-none h-100 p-4">
+        <aside className="hidden sticky top-[50px] md:block w-76 min-h-full flex-none p-4">
           <nav>
             <ul>
               <li>
                 <a href="/react/transition">
-                  transition
+                  Transition
                 </a>
               </li>
             </ul>
@@ -41,40 +40,7 @@ export default function Index({ Page }: { Page?: MDXContent }): JSX.Element {
 
         <article className="prose max-w-prose px-2 lg:px-8 py-4 overflow-x-scroll">
           <Page
-            components={{
-              h1: (props) => {
-                return <h1 {...props} className="text-2xl" />;
-              },
-              h2: (props) => {
-                return <h2 {...props} className="text-xl mt-10" />;
-              },
-              code: (props) => {
-                const className = isString(props.children)
-                  ? "text-xl px-1 rounded bg-gray-100 border py-0.5 border-gray-200/50"
-                  : undefined;
-
-                return <code className={className} {...props} />;
-              },
-              table: (props) => <table {...props} />,
-              thead: (props) => (
-                <tbody {...props} className="border-b-2 border-gray-200" />
-              ),
-              tbody: (props) => (
-                <tbody {...props} className="divide-y divide-gray-200" />
-              ),
-              tr: (props) => {
-                const className = isTHeadTh(props.children)
-                  ? undefined
-                  : "hover:bg-gray-100 transition-colors";
-
-                return (
-                  <tr
-                    {...props}
-                    className={className}
-                  />
-                );
-              },
-            }}
+            components={MDXComponents}
           />
         </article>
 
@@ -84,15 +50,4 @@ export default function Index({ Page }: { Page?: MDXContent }): JSX.Element {
       </main>
     </>
   );
-}
-
-function isTHeadTh(
-  children: ReactNode,
-): children is JSX.IntrinsicElements["th"] {
-  for (const reactNode of Children.toArray(children)) {
-    if (isReactElement(reactNode)) {
-      return reactNode.type === "th";
-    }
-  }
-  return false;
 }

@@ -1,12 +1,68 @@
 import {
   Children,
   createElement,
-  MouseEventHandler,
   ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
   useRef,
+  useState,
 } from "react";
 import { MDXComponents } from "https://esm.sh/@types/mdx/types.d.ts";
-import { isReactElement, isString } from "~/deps.ts";
+import { clsx, isReactElement, isString } from "~/deps.ts";
+
+const Code: MDXComponents["code"] = (props) => {
+  if (isString(props.children)) {
+    return createElement("code", {
+      ...props,
+      className:
+        "text-xl px-1 rounded bg-gray-100 border py-0.5 border-gray-200/50",
+    });
+  }
+
+  const ref = useRef<HTMLElement>(null);
+
+  const [isWaiting, setIsWaiting] = useState(false);
+
+  useEffect(() => {
+    if (!ref.current || !isWaiting) return;
+
+    globalThis.navigator.clipboard.writeText(
+      ref.current.innerText,
+    );
+
+    const id = setTimeout(() => {
+      setIsWaiting(false);
+    }, 4000);
+    return () => clearTimeout(id);
+  }, [isWaiting]);
+
+  const icon = useMemo<string>(
+    () => isWaiting ? "i-mdi-check text-teal-500" : "i-mdi-content-copy",
+    [isWaiting],
+  );
+  const className = useMemo<string>(
+    () => clsx("transition-all duration-300", icon),
+    [icon],
+  );
+
+  return (
+    <>
+      <code {...props} ref={ref} />
+      <div
+        role="toolbar"
+        className="absolute opacity-30 transition-opacity duration-500 group-hover:opacity-100 bottom-0 right-0 p-2"
+      >
+        <button
+          onClick={() => setIsWaiting(true)}
+          className="-mx-2 sm:mx-0 inline-flex p-1.5 border transition duration-300 focus:outline-none focus:ring backdrop-blur bg-white/20 text-white border-white/20 rounded-md"
+        >
+          <span className={className} />
+        </button>
+      </div>
+    </>
+  );
+};
 
 const MDXComponents: MDXComponents = {
   h1: (props) => {
@@ -17,41 +73,7 @@ const MDXComponents: MDXComponents = {
   },
   pre: (props) =>
     createElement("pre", { className: "relative group", ...props }),
-  code: (props) => {
-    if (isString(props.children)) {
-      return createElement("code", {
-        ...props,
-        className:
-          "text-xl px-1 rounded bg-gray-100 border py-0.5 border-gray-200/50",
-      });
-    }
-
-    const ref = useRef<HTMLElement>(null);
-
-    const handleClick: MouseEventHandler = () => {
-      if (!ref.current) return;
-
-      globalThis.navigator.clipboard.writeText(
-        ref.current.innerText,
-      );
-    };
-    return (
-      <>
-        <code {...props} ref={ref} />
-        <div
-          role="toolbar"
-          className="absolute opacity-30 transition-opacity duration-500 group-hover:opacity-100 bottom-0 right-0 p-2"
-        >
-          <button
-            onClick={handleClick}
-            className="border transition duration-300 focus:outline-none focus:ring backdrop-blur bg-white/20 text-white border-white/20 p-1 rounded-md"
-          >
-            Copy
-          </button>
-        </div>
-      </>
-    );
-  },
+  code: Code,
   thead: (props) =>
     createElement("tbody", {
       ...props,
