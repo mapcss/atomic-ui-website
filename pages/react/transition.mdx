@@ -1,0 +1,150 @@
+# Transition
+
+The Transition component lets you add enter/leave transitions to conditionally rendered elements, using CSS classes to control the actual transition styles in the different stages of the transition.
+
+import { useState, cloneElement } from "react";
+import { TransitionProvider } from "@atomic_ui_react/transition/mod.ts";
+import { useBoolean } from "@atomic_ui_react/hooks/mod.ts";
+import Playground from "~/components/playground.tsx";
+
+export const buttonClassName = `px-3 mb-4 py-2 font-medium text-white bg-red-500 border border-red-600 transition transform rounded-full active:bg-opacity-40 hover:scale-105 hover:bg-opacity-30 focus:outline-none focus:ring bg-opacity-20`;
+export const boxClassName = `w-32 h-32 bg-white border border-red-500 rounded-md shadow-lg`;
+
+export const transitionProps = {
+  enter: "transform transition duration-400",
+  enterFrom: "opacity-0 rotate-120 scale-50",
+  enterTo: "opacity-100 rotate-0 scale-100",
+  leave: "transform duration-200 transition ease-in-out",
+  leaveFrom: "opacity-100 rotate-0 scale-100",
+  leaveTo: "opacity-0 scale-95",
+};
+
+export const BasicExample = () => {
+  const [isShow, { toggle }] = useBoolean(true);
+  return (
+    <>
+      <button onClick={toggle} className={buttonClassName}>
+        Toggle
+      </button>
+      <TransitionProvider isShow={isShow} {...transitionProps}>
+        <div className={boxClassName} />
+      </TransitionProvider>
+    </>
+  );
+};
+
+export const Box = () => (
+  <div className="w-32 h-32 bg-white rounded-md shadow-lg" />
+);
+
+<Playground preview={<BasicExample />}>
+```tsx
+export default = () => {
+  const [isShow, { toggle }] = useBoolean(true);
+  return (
+    <>
+      <button onClick={toggle}>Toggle</button>
+      <TransitionProvider
+        isShow={isShow}
+        {...transitionProps}
+      >
+       <div className="w-32 h-32 bg-white rounded-md shadow-lg" />
+      </TransitionProvider>{" "}
+    </>
+  );
+};
+```
+</Playground>
+
+Once the transition was over, the element was removed from the DOM and a Layout Shift occurred.
+
+Let's learn more about Transition through the resolution of this strange behavior.
+
+## Conrtoll rendering
+
+`render` props can specify the actual elements to be rendered.
+
+By default, the `render` function works to remove the element from the DOM when the transition is completed and `isShow` props is `false`.
+This internally calls the next function.
+
+```ts
+import { ReactElement, cloneElement, createElement, Fragment } from "react";
+import { TransitionRender } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+const defaultRender: TransitionRender<any> = ({
+  isShowable,
+  children,
+  mergedProps,
+}): ReactElement => {
+  return isShowable
+    ? cloneElement(children, mergedProps)
+    : createElement(Fragment);
+};
+```
+
+First argment - `Context`
+
+| name        | type           | description                                                           |
+| ----------- | -------------- | --------------------------------------------------------------------- |
+| children    | `ReactElement` | Root child adapting transitions.                                      |
+| mergedProps | `mergedProps`  | Props that deep merged with children root props and transition props. |
+| isShowable  | `boolean`      | Whether transition is completed and `isShow` state is `false` or not. |
+
+Let's look at an example that gives you complete control over this behavior.
+
+export const RenderExample = () => {
+  const [isShow, { toggle }] = useBoolean(true);
+  return (
+    <>
+      <button className={buttonClassName} onClick={toggle}>
+        Toggle
+      </button>
+      <TransitionProvider
+        {...transitionProps}
+        isShow={isShow}
+        render={({ children, mergedProps, isShowable }) => {
+          const style = isShowable ? {} : { visibility: "hidden" };
+          return cloneElement(children, { ...mergedProps, style });
+        }}
+      >
+        <div className={boxClassName} />
+      </TransitionProvider>
+    </>
+  );
+};
+
+<Playground preview={<RenderExample />}>
+
+```tsx
+import {
+  TransitionProvider,
+  useBoolean,
+} from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+
+export default () => {
+  const [isShow, { toggle }] = useBoolean(true);
+  return (
+    <>
+      <button onClick={toggle}>Toggle</button>
+      <TransitionProvider
+        enter="transform transition duration-400"
+        enterFrom="opacity-0 rotate-120 scale-50"
+        enterTo="opacity-100 rotate-0 scale-100"
+        leave="transform duration-200 transition ease-in-out"
+        leaveFrom="opacity-100 rotate-0 scale-100"
+        leaveTo="opacity-0 scale-95"
+        isShow={isShow}
+        render={({ children, mergedProps, isShowable }) => {
+          const style = isShowable ? {} : { visibility: "hidden" };
+          return cloneElement(children, { ...mergedProps, style });
+        }}
+      >
+        <div />
+      </TransitionProvider>
+    </>
+  );
+};
+```
+
+</Playground>
+
+Instead of removing it from the DOM, change the `visibility` of the CSS Property. This prevents LayoutShift from occurring.

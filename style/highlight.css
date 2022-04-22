@@ -1,0 +1,9 @@
+@media (min-width: 640px) {
+  .hljs {
+    @apply rounded-xl;
+  }
+}
+
+.hljs {
+  @apply bg-dark-500 ring-1 max-w-8xl ring-inset ring-black;
+}
