@@ -66,7 +66,7 @@ const Code: MDXComponents["code"] = (props) => {
 };
 
 const hashLinkClassName =
-  "absolute transition duration-300 delay-200 transform -translate-x-full border border-gray-100 rounded-md inline-flex p-1 -ml-2 opacity-0 group-hover:opacity-100";
+  "hidden sm:inline-flex absolute transition duration-300 delay-200 transform -translate-x-full border border-gray-100 rounded-md p-1 -ml-2 opacity-0 group-hover:opacity-100";
 
 const MDXComponents: MDXComponents = {
   h1: ({ children, ...props }) => {
