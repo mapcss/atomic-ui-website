@@ -134,7 +134,9 @@ function hasClassNameProp(
   value: ReactElement,
 ): value is ReactElement<{ className: string }> {
   if (!isObject(value.props)) return false;
-  return "className" in value.props && isString((value.props as any).className);
+  return "className" in value.props &&
+    // deno-lint-ignore no-explicit-any
+    isString((value.props as any).className);
 }
 
 function hasClassName(

@@ -17,6 +17,14 @@
     "build": "deno run -A https://deno.land/x/aleph@v0.3.0-beta.19/cli.ts build",
     "start": "deno run -A https://deno.land/x/aleph@v0.3.0-beta.19/cli.ts start"
   },
-  "lint": {},
-  "format": {}
+  "lint": {
+    "files": {
+      "exclude": [".aleph", "dist"]
+    }
+  },
+  "fmt": {
+    "files": {
+      "exclude": [".aleph", "dist"]
+    }
+  }
 }
