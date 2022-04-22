@@ -67,8 +67,8 @@ jobs:
 
       - name: debug
         run: |
-          echo pwd
-          echo ls -a
+          pwd
+          ls -a
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
