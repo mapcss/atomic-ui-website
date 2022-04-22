@@ -1,9 +1,18 @@
-import { Children, ReactNode } from "react";
 import { MDXContent } from "https://esm.sh/@types/mdx/types.d.ts";
-import { isReactElement, isString } from "~/deps.ts";
+import MDXComponents from "~/components/mdx_components.tsx";
+import TOC from "~/components/table_of_contents.tsx";
+import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
 
-export default function Index({ Page }: { Page?: MDXContent }): JSX.Element {
+export default function Index(
+  { Page, pageProps }: {
+    Page?: MDXContent;
+    pageProps: {
+      tableOfContents?: TableOfContents;
+    };
+  },
+): JSX.Element {
   if (!Page) return <></>;
+
   return (
     <>
       <head>
@@ -16,7 +25,7 @@ export default function Index({ Page }: { Page?: MDXContent }): JSX.Element {
           href="~/style/highlight.css"
         />
       </head>
-      <header className="p-2 sticky top-0 bg-white z-1 border-b border-gray-200">
+      <header className="px-4 py-2 sticky top-0 backdrop-blur-md z-1 border-b bg-white/50 border-white/30">
         <div className="container mx-auto 2xl:px-34">
           <a href="/">
             <h1 className="xl:px-4 text-xl leading-relaxed">
@@ -27,72 +36,28 @@ export default function Index({ Page }: { Page?: MDXContent }): JSX.Element {
       </header>
 
       <main className="container relative mx-auto flex justify-center">
-        <aside className="hidden sticky top-[50px] md:block w-76 min-h-full flex-none h-100 p-4">
+        <aside className="hidden sticky top-[50px] md:block w-76 max-h-screen h-full flex-none p-4">
           <nav>
             <ul>
               <li>
                 <a href="/react/transition">
-                  transition
+                  Transition
                 </a>
               </li>
             </ul>
           </nav>
         </aside>
 
-        <article className="prose max-w-prose px-2 lg:px-8 py-4 overflow-x-scroll">
-          <Page
-            components={{
-              h1: (props) => {
-                return <h1 {...props} className="text-2xl" />;
-              },
-              h2: (props) => {
-                return <h2 {...props} className="text-xl mt-10" />;
-              },
-              code: (props) => {
-                const className = isString(props.children)
-                  ? "text-xl px-1 rounded bg-gray-100 border py-0.5 border-gray-200/50"
-                  : undefined;
-
-                return <code className={className} {...props} />;
-              },
-              table: (props) => <table {...props} />,
-              thead: (props) => (
-                <tbody {...props} className="border-b-2 border-gray-200" />
-              ),
-              tbody: (props) => (
-                <tbody {...props} className="divide-y divide-gray-200" />
-              ),
-              tr: (props) => {
-                const className = isTHeadTh(props.children)
-                  ? undefined
-                  : "hover:bg-gray-100 transition-colors";
-
-                return (
-                  <tr
-                    {...props}
-                    className={className}
-                  />
-                );
-              },
-            }}
-          />
+        <article className="prose max-w-prose px-4 min-w-0 lg:px-8 py-4">
+          <Page components={MDXComponents} />
         </article>
 
-        <aside className="hidden xl:block w-76 flex-none h-100 p-4">
-          On this page
+        <aside className="hidden sticky top-[50px] xl:block w-76 flex-none max-h-screen h-full p-4">
+          <h3>On this page</h3>
+
+          <TOC children={pageProps.tableOfContents} />
         </aside>
       </main>
     </>
   );
-}
-
-function isTHeadTh(
-  children: ReactNode,
-): children is JSX.IntrinsicElements["th"] {
-  for (const reactNode of Children.toArray(children)) {
-    if (isReactElement(reactNode)) {
-      return reactNode.type === "th";
-    }
-  }
-  return false;
 }

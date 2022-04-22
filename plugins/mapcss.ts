@@ -53,7 +53,7 @@ export default function mapcssPlugin(
       });
 
       if (aleph.mode === "production") {
-        const walkEntry = expandGlob("**/*.{tsx,mdx}");
+        const walkEntry = expandGlob(`**/*.{${ext.join(",")}}`);
         const paths = new Set<WalkEntry>();
         for await (const entry of walkEntry) {
           if (entry.isFile) {

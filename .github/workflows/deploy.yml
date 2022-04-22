@@ -6,8 +6,35 @@ on:
   push:
     branches:
       - main
+
 jobs:
-  build_and_deploy:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: lint
+        run: |
+          deno lint
+          deno fmt --check
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: test
+        run: deno test --doc
+
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -26,6 +53,23 @@ jobs:
 
       - name: build
         run: deno task build
+
+      - uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: dist
+          path: dist
+
+  deploy:
+    needs: [lint, test, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

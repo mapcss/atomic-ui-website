@@ -21,6 +21,7 @@ export default <Config> {
     mdx({
       remarkPlugins: [
         remarkFrontmatter,
+        // deno-lint-ignore no-explicit-any
         remarkMdxFrontmatter as any,
         remarkFrontmatterProps,
         remarkTocProps,

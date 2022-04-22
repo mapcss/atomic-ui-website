@@ -2,8 +2,33 @@ name: preview
 on: pull_request
 
 jobs:
-  build_and_preview:
-    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: lint
+        run: |
+          deno lint
+          deno fmt --check
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: test
+        run: deno test --doc
+
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -22,6 +47,29 @@ jobs:
 
       - name: build
         run: deno task build
+
+      - uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: dist
+          path: dist
+
+  preview:
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
+    needs: [lint, test, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
+
+      - name: debug
+        run: |
+          pwd
+          ls -a
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

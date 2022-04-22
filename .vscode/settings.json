@@ -4,6 +4,22 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   },
+  "deno.codeLens.implementations": true,
+  "deno.codeLens.references": true,
+  "deno.codeLens.referencesAllFunctions": true,
+  "deno.codeLens.test": true,
+  "deno.lint": true,
+  "deno.suggest.autoImports": true,
+  "deno.suggest.completeFunctionCalls": true,
+  "deno.suggest.imports.autoDiscover": true,
+  "deno.suggest.imports.hosts": {
+    "https://deno.land": true,
+    "https://x.nest.land": true,
+    "https://crux.land": true
+  },
+  "deno.suggest.names": true,
+  "deno.suggest.paths": true,
+  "deno.testing.enable": true,
   "deno.enable": true,
   "deno.unstable": true,
   "deno.config": "./deno.json",
