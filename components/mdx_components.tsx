@@ -8,7 +8,8 @@ import {
   useState,
 } from "react";
 import { MDXComponents } from "https://esm.sh/@types/mdx/types.d.ts";
-import { clsx, isReactElement, isString } from "~/deps.ts";
+import { clsx, isString } from "~/deps.ts";
+import { isReactElement } from "~/util.ts";
 
 const Code: MDXComponents["code"] = (props) => {
   if (isString(props.children)) {

@@ -10,14 +10,8 @@ import {
   useState,
 } from "react";
 import { Tab, TabList, TabPanel, TabProvider } from "@atomic_ui_react/mod.ts";
-import {
-  hasChildren,
-  isFunction,
-  isNumber,
-  isObject,
-  isReactElement,
-  isString,
-} from "~/deps.ts";
+import { isFunction, isNumber, isObject, isString } from "~/deps.ts";
+import { hasChildren, isReactElement } from "~/util.ts";
 
 type Props = {
   preview: ReactNode;
