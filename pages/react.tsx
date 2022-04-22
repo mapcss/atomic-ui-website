@@ -48,7 +48,7 @@ export default function Index(
           </nav>
         </aside>
 
-        <article className="prose max-w-prose px-4 lg:px-8 py-4">
+        <article className="prose max-w-prose px-4 min-w-0 lg:px-8 py-4">
           <Page components={MDXComponents} />
         </article>
 
