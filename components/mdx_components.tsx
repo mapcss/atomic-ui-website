@@ -55,7 +55,7 @@ const Code: MDXComponents["code"] = (props) => {
       >
         <button
           onClick={() => setIsWaiting(true)}
-          className="-mx-2 sm:mx-0 inline-flex p-1.5 border transition duration-300 focus:outline-none focus:ring backdrop-blur bg-white/20 text-white border-white/20 rounded-md"
+          className="sm:mx-0 inline-flex p-1.5 border transition duration-300 focus:outline-none focus:ring backdrop-blur bg-white/20 text-white border-white/20 rounded-md"
         >
           <span className={className} />
         </button>
@@ -72,8 +72,13 @@ const MDXComponents: MDXComponents = {
     return createElement("h2", { ...props, className: "text-xl mt-10" });
   },
   pre: (props) =>
-    createElement("pre", { className: "relative group", ...props }),
+    createElement("pre", {
+      className: "relative group -mx-4 sm:mx-0",
+      ...props,
+    }),
   code: Code,
+  table: (props) =>
+    createElement("table", { ...props, className: "-mx-4 sm:mx-0 my-4" }),
   thead: (props) =>
     createElement("tbody", {
       ...props,

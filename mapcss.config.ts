@@ -37,6 +37,9 @@ export default <Config> {
           color: false,
         },
         ":not(pre) > code::before, :not(pre) > code::after": false,
+        table: {
+          margin: false,
+        },
         "tr:nth-child(2n)": false,
       },
     }),

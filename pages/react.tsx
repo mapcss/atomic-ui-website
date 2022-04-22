@@ -25,7 +25,7 @@ export default function Index(
           href="~/style/highlight.css"
         />
       </head>
-      <header className="p-2 sticky top-0 bg-white z-1 border-b border-gray-200">
+      <header className="px-4 py-2 sticky top-0 bg-white z-1 border-b border-gray-200">
         <div className="container mx-auto 2xl:px-34">
           <a href="/">
             <h1 className="xl:px-4 text-xl leading-relaxed">
@@ -48,7 +48,7 @@ export default function Index(
           </nav>
         </aside>
 
-        <article className="prose max-w-prose px-2 lg:px-8 py-4 overflow-x-scroll">
+        <article className="prose max-w-prose px-4 lg:px-8 py-4 overflow-x-scroll">
           <Page components={MDXComponents} />
         </article>
 
