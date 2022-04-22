@@ -31,6 +31,7 @@ export default <Config> {
           padding: false,
           margin: false,
           borderRadius: false,
+          overflowX: false,
         },
         code: {
           background: false,
