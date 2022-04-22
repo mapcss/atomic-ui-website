@@ -27,6 +27,9 @@ export default <Config> {
     }),
     presetTypography({
       css: {
+        h2: {
+          lineHeight: false,
+        },
         pre: {
           padding: false,
           margin: false,

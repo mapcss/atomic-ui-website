@@ -9,6 +9,7 @@ import {
 } from "react";
 import { MDXComponents } from "https://esm.sh/@types/mdx/types.d.ts";
 import { clsx, isString } from "~/deps.ts";
+import HashLink from "~/components/hash_link.tsx";
 import { isReactElement } from "~/util.ts";
 
 const Code: MDXComponents["code"] = (props) => {
@@ -64,12 +65,37 @@ const Code: MDXComponents["code"] = (props) => {
   );
 };
 
+const hashLinkClassName =
+  "absolute transition duration-300 delay-200 transform -translate-x-full border border-gray-100 rounded-md inline-flex p-1 -ml-2 opacity-0 group-hover:opacity-100";
+
 const MDXComponents: MDXComponents = {
-  h1: (props) => {
-    return createElement("h1", { ...props, className: "text-2xl" });
+  h1: ({ children, ...props }) => {
+    return (
+      <h1 {...props} className="text-2xl relative group">
+        <HashLink
+          href={`#${props.id}`}
+          className={hashLinkClassName}
+        >
+          <span className="i-mdi-link-variant w-5 h-5" />
+        </HashLink>
+
+        <span>{children}</span>
+      </h1>
+    );
   },
-  h2: (props) => {
-    return createElement("h2", { ...props, className: "text-xl mt-10" });
+  h2: ({ children, ...props }) => {
+    return (
+      <h2 {...props} className="text-xl mt-10 relative group">
+        <HashLink
+          href={`#${props.id}`}
+          className={hashLinkClassName}
+        >
+          <span className="i-mdi-link-variant w-5 h-5" />
+        </HashLink>
+
+        <span>{children}</span>
+      </h2>
+    );
   },
   pre: (props) =>
     createElement("pre", {
