@@ -2,7 +2,6 @@ import {
   Children,
   cloneElement,
   CSSProperties,
-  MouseEventHandler,
   ReactElement,
   ReactNode,
   useEffect,
@@ -14,40 +13,25 @@ import { Tab, TabList, TabPanel, TabProvider } from "@atomic_ui_react/mod.ts";
 import {
   hasChildren,
   isFunction,
+  isNumber,
   isObject,
   isReactElement,
   isString,
 } from "~/deps.ts";
 
 type Props = {
-  isCopyable: boolean;
   preview: ReactNode;
   children: ReactNode;
   inheritHeight: boolean;
 };
 
 export default function Playground(
-  { preview, isCopyable = true, children, inheritHeight = true }: Readonly<
+  { preview, children, inheritHeight = true }: Readonly<
     Partial<Props>
   >,
 ): JSX.Element {
-  const ref = useRef<HTMLElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-
   const [height, setHeight] = useState<number | undefined>();
-
-  const handleClick = useMemo<MouseEventHandler>(() => {
-    return () => {
-      if (!isCopyable) return;
-      const target = ref.current?.children.item(1);
-
-      if (isHTMLElement(target)) {
-        globalThis.navigator.clipboard.writeText(
-          target.innerText,
-        );
-      }
-    };
-  }, [isCopyable]);
 
   const modifiedChildren = useMemo<ReactNode>(
     () => inheritHeight ? removeHljsClassName(children) : children,
@@ -60,7 +44,7 @@ export default function Playground(
   });
 
   const style = useMemo<CSSProperties | undefined>(() => {
-    return height
+    return isNumber(height)
       ? {
         maxHeight: `${height}px`,
         overflow: "scroll",
@@ -85,27 +69,12 @@ export default function Playground(
             {preview}
           </TabPanel>
           <TabPanel className="-mx-2 sm:mx-0 hljs" style={style}>
-            <div role="toolbar" className="absolute right-0 bottom-0 p-2">
-              {isCopyable &&
-                (
-                  <button
-                    onClick={handleClick}
-                    className="border backdrop-blur bg-white/20 text-white border-white/20 p-1 rounded-md"
-                  >
-                    Copy
-                  </button>
-                )}
-            </div>
             {modifiedChildren}
           </TabPanel>
         </TabProvider>
       </div>
     </>
   );
-}
-
-function isHTMLElement(value: unknown): value is HTMLElement {
-  return value instanceof HTMLElement;
 }
 
 /** remove `hljs` className what attached by Highlight.js */
