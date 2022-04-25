@@ -26,7 +26,7 @@ export const BasicExample = () => {
       <button onClick={toggle} className={buttonClassName}>
         Toggle
       </button>
-      <TransitionProvider isShow={isShow} {...transitionProps}>
+      <TransitionProvider immediate isShow={isShow} {...transitionProps}>
         <div className={boxClassName} />
       </TransitionProvider>
     </>
@@ -100,10 +100,11 @@ export const RenderExample = () => {
       </button>
       <TransitionProvider
         {...transitionProps}
+        leaveTo="opacity-20 border-6 border-dashed opacity-20 scale-95 transform"
+        leaved="opacity-20 border-6 border-dashed opacity-20 scale-95 transform"
         isShow={isShow}
         render={({ children, mergedProps, isShowable }) => {
-          const style = isShowable ? {} : { visibility: "hidden" };
-          return cloneElement(children, { ...mergedProps, style });
+          return cloneElement(children, mergedProps);
         }}
       >
         <div className={boxClassName} />
@@ -132,10 +133,11 @@ export default () => {
         leave="transform duration-200 transition ease-in-out"
         leaveFrom="opacity-100 rotate-0 scale-100"
         leaveTo="opacity-0 scale-95"
+        leaved="border"
         isShow={isShow}
         render={({ children, mergedProps, isShowable }) => {
           const style = isShowable ? {} : { visibility: "hidden" };
-          return cloneElement(children, { ...mergedProps, style });
+          return cloneElement(children, { ...mergedProps });
         }}
       >
         <div />

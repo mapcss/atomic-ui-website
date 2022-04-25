@@ -2,7 +2,6 @@ import {
   Children,
   createElement,
   ReactNode,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -11,6 +10,7 @@ import { MDXComponents } from "https://esm.sh/@types/mdx/types.d.ts";
 import { clsx, isString } from "~/deps.ts";
 import HashLink from "~/components/hash_link.tsx";
 import { isReactElement } from "~/util.ts";
+import { useTimeout } from "@atomic_ui_react/mod.ts";
 
 const Code: MDXComponents["code"] = (props) => {
   if (isString(props.children)) {
@@ -25,18 +25,17 @@ const Code: MDXComponents["code"] = (props) => {
 
   const [isWaiting, setIsWaiting] = useState(false);
 
-  useEffect(() => {
-    if (!ref.current || !isWaiting) return;
-
-    globalThis.navigator.clipboard.writeText(
-      ref.current.innerText,
-    );
-
-    const id = setTimeout(() => {
+  useTimeout(
+    () => {
+      if (!ref.current || !isWaiting) return;
+      globalThis.navigator.clipboard.writeText(
+        ref.current.innerText,
+      );
       setIsWaiting(false);
-    }, 4000);
-    return () => clearTimeout(id);
-  }, [isWaiting]);
+    },
+    { ms: 4000 },
+    [isWaiting],
+  );
 
   const icon = useMemo<string>(
     () => isWaiting ? "i-mdi-check text-teal-500" : "i-mdi-content-copy",
