@@ -18,6 +18,9 @@ import {
 import mdi from "https://esm.sh/@iconify-json/mdi/icons.json" assert {
   type: "json",
 };
+import charm from "https://esm.sh/@iconify-json/charm/icons.json" assert {
+  type: "json",
+};
 
 export default <Config> {
   extractor: [simpleExtractor, bracketExtractor],
@@ -49,6 +52,7 @@ export default <Config> {
     }),
     presetSVG({
       mdi: iconifyJSON(mdi),
+      charm: iconifyJSON(charm)
     }, {
       declaration: {
         display: "inline-block",
