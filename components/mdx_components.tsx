@@ -98,12 +98,12 @@ const MDXComponents: MDXComponents = {
   },
   pre: (props) =>
     createElement("pre", {
-      className: "relative group -mx-4 sm:mx-0",
+      className: "relative group -mx-5 sm:mx-0",
       ...props,
     }),
   code: Code,
   table: (props) =>
-    createElement("table", { ...props, className: "-mx-4 sm:mx-0 my-4" }),
+    createElement("table", { ...props, className: "-mx-5 sm:mx-0 my-4" }),
   thead: (props) =>
     createElement("tbody", {
       ...props,

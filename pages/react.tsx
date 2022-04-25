@@ -93,7 +93,7 @@ export default function Index(
         </TransitionProvider>
       </Portal>
 
-      <header className="px-4 relative z-1 py-2 sticky top-0 backdrop-blur-md border-b bg-white/50 border-white/30">
+      <header className="px-5 relative z-1 py-2 sticky top-0 backdrop-blur-md border-b bg-white/50 border-white/30">
         <div className="container mx-auto 2xl:px-34 flex justify-between items-center">
           <a href="/">
             <h1 className="xl:px-4 text-xl leading-relaxed">
@@ -120,7 +120,7 @@ export default function Index(
           </nav>
         </aside>
 
-        <article className="prose max-w-prose px-4 min-w-0 lg:px-8 py-4">
+        <article className="prose max-w-prose px-5 min-w-0 lg:px-8 py-4">
           <Page components={MDXComponents} />
         </article>
 
