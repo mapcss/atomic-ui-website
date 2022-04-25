@@ -52,7 +52,7 @@ export default <Config> {
     }),
     presetSVG({
       mdi: iconifyJSON(mdi),
-      charm: iconifyJSON(charm)
+      charm: iconifyJSON(charm),
     }, {
       declaration: {
         display: "inline-block",
