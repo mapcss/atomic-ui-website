@@ -59,10 +59,10 @@ export default function Playground(
             </Tab>
           </TabList>
 
-          <TabPanel className="grid place-content-center -mx-4 sm:mx-0 p-20 from-red-500 bg-gradient-to-bl via-red-400 to-red-300 sm:rounded-xl shadow border border-red-600">
+          <TabPanel className="grid place-content-center -mx-5 sm:mx-0 p-20 from-red-500 bg-gradient-to-bl via-red-400 to-red-300 sm:rounded-xl shadow border border-red-600">
             {preview}
           </TabPanel>
-          <TabPanel className="-mx-4 sm:mx-0 hljs" style={style}>
+          <TabPanel className="-mx-5 sm:mx-0 hljs" style={style}>
             {modifiedChildren}
           </TabPanel>
         </TabProvider>

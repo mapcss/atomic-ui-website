@@ -3,11 +3,23 @@ import { dynamic } from "aleph/react";
 import { MDXContent } from "https://esm.sh/@types/mdx/types.d.ts";
 import MDXComponents from "~/components/mdx_components.tsx";
 import TOC from "~/components/table_of_contents.tsx";
-import { TransitionProvider, useBoolean } from "@atomic_ui_react/mod.ts";
+import { Transition, useBoolean } from "@atomic_ui_react/mod.ts";
 import useClickOutside from "~/hooks/use_click_outside.ts";
 import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
 
 const Portal = dynamic(() => import("~/components/portal.tsx"));
+
+type NavLink = {
+  name: string;
+  path: string;
+};
+const navLinks: NavLink[] = [{
+  name: "Transition",
+  path: "/react/transition",
+}, {
+  name: "Switch",
+  path: "/react/switch",
+}];
 
 function _Head(): JSX.Element {
   return (
@@ -44,7 +56,7 @@ export default function Index(
     <>
       <Head />
       <Portal>
-        <TransitionProvider
+        <Transition
           enter="transition duration-300"
           enterFrom="opacity-0 backdrop-blur"
           enterTo="backdrop-blur-md"
@@ -63,7 +75,7 @@ export default function Index(
             }`}
               </style>
             </head>
-            <TransitionProvider
+            <Transition
               enter="transform transition duration-300"
               enterFrom="-translate-x-full"
               leave="transform transition duration-300"
@@ -88,12 +100,12 @@ export default function Index(
                   </ul>
                 </nav>
               </div>
-            </TransitionProvider>
+            </Transition>
           </div>
-        </TransitionProvider>
+        </Transition>
       </Portal>
 
-      <header className="px-4 relative z-1 py-2 sticky top-0 backdrop-blur-md border-b bg-white/50 border-white/30">
+      <header className="px-5 relative z-1 py-2 sticky top-0 backdrop-blur-md border-b bg-white/50 border-white/30">
         <div className="container mx-auto 2xl:px-34 flex justify-between items-center">
           <a href="/">
             <h1 className="xl:px-4 text-xl leading-relaxed">
@@ -107,24 +119,28 @@ export default function Index(
         </div>
       </header>
 
-      <main className="container relative z-auto mx-auto flex justify-center">
-        <aside className="hidden sticky top-[50px] md:block w-76 max-h-screen h-full flex-none p-4">
+      <main className="container relative z-auto mx-auto grid justify-center grid-cols-1 md:grid-cols-[260px_minmax(0,65ch)] xl:grid-cols-[300px_minmax(auto,65ch)_300px]">
+        <article className="prose px-5 order-2 lg:px-8 py-4">
+          <Page components={MDXComponents} />
+        </article>
+
+        <aside className="hidden sticky top-[50px] md:block order-1 max-h-screen h-full p-4">
           <nav>
             <ul>
-              <li>
-                <a href="/react/transition">
-                  Transition
-                </a>
-              </li>
+              {navLinks.map(({ name, path }) => {
+                return (
+                  <li key={name}>
+                    <a href={path}>
+                      {name}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
         </aside>
 
-        <article className="prose max-w-prose px-4 min-w-0 lg:px-8 py-4">
-          <Page components={MDXComponents} />
-        </article>
-
-        <aside className="hidden sticky top-[50px] xl:block w-76 flex-none max-h-screen h-full p-4">
+        <aside className="xl:sticky xl:top-[50px] md:hidden xl:block order-1 md:order-3 max-h-screen h-full p-4">
           <h3>On this page</h3>
 
           <TOC children={pageProps.tableOfContents} />

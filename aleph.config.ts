@@ -4,7 +4,7 @@ import {
   remarkFrontmatterProps,
   remarkTocProps,
 } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
-import patchImport from "https://crux.land/3N2FKD";
+import patchImport from "https://crux.land/7K9MjV";
 import injectReact from "https://crux.land/6m9ZEy";
 import mapcss from "~/plugins/mapcss.ts";
 import json from "./import_map.json" assert { type: "json" };
