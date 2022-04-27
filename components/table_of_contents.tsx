@@ -1,12 +1,13 @@
 import HashLink from "~/components/hash_link.tsx";
+import { clsx } from "../deps.ts";
 import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
 
 export default function Toc(
-  { children }: { children?: TableOfContents },
+  { children, depth = 1 }: { children?: TableOfContents; depth?: number },
 ): JSX.Element {
   return children?.items?.length
     ? (
-      <ul className="text-sm leading-6">
+      <ul className={clsx("text-sm leading-6", 1 < depth && "pl-3")}>
         {children.items.map((item) => {
           return (
             <li key={item.title}>
@@ -16,7 +17,9 @@ export default function Toc(
               >
                 {item.title}
               </HashLink>
-              {item.items?.length ? <Toc children={item} /> : null}
+              {item.items?.length
+                ? <Toc children={item} depth={depth + 1} />
+                : null}
             </li>
           );
         })}
