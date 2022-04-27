@@ -96,6 +96,10 @@ const MDXComponents: MDXComponents = {
       </h2>
     );
   },
+  a: (props) => {
+    const type = isFootnote(props) ? HashLink : "a";
+    return createElement(type, props);
+  },
   pre: (props) =>
     createElement("pre", {
       className: "relative group -mx-5 sm:mx-0",
@@ -128,6 +132,18 @@ function isTHeadTh(
     }
   }
   return false;
+}
+
+function isFootnote(
+  props:
+    & React.DetailedHTMLProps<
+      React.AnchorHTMLAttributes<HTMLAnchorElement>,
+      HTMLAnchorElement
+    >
+    & { "data-footnote-ref"?: boolean; "data-footnote-backref"?: boolean },
+): boolean {
+  return props["data-footnote-ref"] === true ||
+    props["data-footnote-backref"] === true;
 }
 
 export default MDXComponents;
