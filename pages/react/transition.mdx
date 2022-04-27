@@ -146,3 +146,75 @@ export default () => {
 </Playground>
 
 Instead of removing it from the DOM, change the `visibility` of the CSS Property. This prevents LayoutShift from occurring.
+
+## API
+
+### Transition
+
+#### Props
+
+Generics: `<E extends Element = Element>`
+
+| Name      | Type            | Required / Default | Description                                                                                                                                              |
+| --------- | --------------- | :----------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| children  | `ReactElement`  | :white_check_mark: | Root child adapting transitions.                                                                                                                         |
+| isShow    | `boolean`       |        [^1]        | Whether the target should be shown or hidden.                                                                                                            |
+| isRoot    | `boolean`       |   [^1] / `true`    | Whether this component is transition root or not.                                                                                                        |
+| immediate | `boolean`       |      `false`       | Whether do transitions immediately(on first mount) or not. <br/> `true` - do transition on first mount.<br/> `false` - do not transition on first mount. |
+| enter     | `string`        |         -          | Classes during the entire enter phase.                                                                                                                   |
+| enterFrom | `string`        |         -          | Classes immediately after the enter phase starts.                                                                                                        |
+| enterTo   | `string`        |         -          | Classes immediately after the enter phase starts.                                                                                                        |
+| entered   | `string`        |         -          | Classes the enter phase is ended.                                                                                                                        |
+| leave     | `string`        |         -          | Classes during the entire leave phase.                                                                                                                   |
+| leaveTo   | `string`        |         -          | Classes before the leave phase starts.                                                                                                                   |
+| leaveFrom | `string`        |         -          | Classes to immediately after the leave phase starts.                                                                                                     |
+| leaved    | `string`        |         -          | Classes the leave phase is ended.                                                                                                                        |
+| render    | `Render<E>`[^2] |         -          | Controls the rendering element. Called just before rendering, it returns the element to actually render.                                                 |
+| onChange  | [^3]            |         -          | Call on change transition states.                                                                                                                        |
+
+[^1]: Exclusive property. Must be either `isShow` or `isRoot`.
+
+    ```tsx
+    type ExclusiveOption =
+      | {
+          isShow: boolean;
+          isRoot: true;
+        }
+      | {
+          isShow: never;
+          isRoot: false;
+        };
+    ```
+
+[^2]: `Render<E>`
+
+    ```tsx
+    import { ReactElement, RefObject } from "react";
+    import {
+      UseTransitionReturnValue,
+      UseGroupTransitionReturnValue,
+      TransitionProps,
+    } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+
+    type RenderParam<E extends Element = Element> = {
+      /** Root child adapting transitions. */
+      children: ReactElement;
+
+      /** The root child `RefObject` */
+      ref: RefObject<E>;
+    };
+
+    type RenderContext = UseTransitionReturnValue &
+      UseGroupTransitionReturnValue &
+      Required<Pick<TransitionProps, "isShow" | "immediate" | "isRoot">>;
+
+    type Render<E extends Element = Element> = (
+      param: RenderParam<E>,
+      context: RenderContext
+    ) => ReactElement;
+    ```
+
+[^3]: `function`
+
+    - 1st Arg - state: `UseTransitionReturnValue`
+    - Return - `void`

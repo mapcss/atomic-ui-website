@@ -48,6 +48,9 @@ export default <Config> {
           margin: false,
         },
         "tr:nth-child(2n)": false,
+        ol: {
+          paddingLeft: false,
+        },
       },
     }),
     presetSVG({
