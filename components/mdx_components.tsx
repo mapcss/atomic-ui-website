@@ -17,7 +17,7 @@ const Code: MDXComponents["code"] = (props) => {
     return createElement("code", {
       ...props,
       className:
-        "text-xl px-1 rounded bg-gray-100 border py-0.5 border-gray-200/50",
+        "text-xl px-1 rounded bg-gray-100 dark:bg-dark-800 border py-0.5 border-gray-200/50 dark:border-dark-200",
     });
   }
 
@@ -96,6 +96,20 @@ const MDXComponents: MDXComponents = {
       </h2>
     );
   },
+  h3: ({ children, ...props }) => {
+    return (
+      <h3 {...props} className="relative group">
+        <HashLink
+          href={`#${props.id}`}
+          className={hashLinkClassName}
+        >
+          <span className="i-mdi-link-variant w-5 h-5" />
+        </HashLink>
+
+        <span>{children}</span>
+      </h3>
+    );
+  },
   a: (props) => {
     const type = isFootnote(props) ? HashLink : "a";
     return createElement(type, props);
@@ -111,14 +125,17 @@ const MDXComponents: MDXComponents = {
   thead: (props) =>
     createElement("tbody", {
       ...props,
-      className: "border-b-2 border-gray-200",
+      className: "border-b-2 border-gray-200 dark:border-dark-200",
     }),
   tbody: (props) =>
-    createElement("tbody", { ...props, className: "divide-y divide-gray-200" }),
+    createElement("tbody", {
+      ...props,
+      className: "divide-y divide-gray-200 dark:divide-dark-200",
+    }),
   tr: (props) => {
     const className = isTHeadTh(props.children)
       ? undefined
-      : "hover:bg-gray-100 transition-colors";
+      : "hover:bg-gray-100 hover:dark:bg-dark-100 transition-colors";
     return createElement("tr", { ...props, className });
   },
 };

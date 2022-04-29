@@ -5,6 +5,7 @@ import MDXComponents from "~/components/mdx_components.tsx";
 import TOC from "~/components/table_of_contents.tsx";
 import { Transition, useBoolean } from "@atomic_ui_react/mod.ts";
 import useClickOutside from "~/hooks/use_click_outside.ts";
+import ToggleDark from "~/components/toggle_dark.tsx";
 import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
 
 const Portal = dynamic(() => import("~/components/portal.tsx"));
@@ -85,7 +86,7 @@ export default function Index(
             >
               <div
                 ref={ref}
-                className="w-2/3 min-w-[260px] max-w-xs h-full bg-light-100 border-r border-gray-100"
+                className="w-2/3 min-w-[260px] max-w-xs h-full bg-gray-100 dark:bg-dark-900 border-r border-gray-200 dark:border-dark-200"
               >
                 <nav className="p-2">
                   <ul>
@@ -105,7 +106,7 @@ export default function Index(
         </Transition>
       </Portal>
 
-      <header className="px-5 relative z-1 py-2 sticky top-0 backdrop-blur-md border-b bg-white/50 border-white/30">
+      <header className="px-5 relative z-1 py-2 sticky top-0 backdrop-blur-md border-b bg-white/50 dark:bg-dark-900 border-white/30 dark:border-dark-200">
         <div className="container mx-auto 2xl:px-34 flex justify-between items-center">
           <a href="/">
             <h1 className="xl:px-4 text-xl leading-relaxed">
@@ -113,9 +114,12 @@ export default function Index(
             </h1>
           </a>
 
-          <button className="md:hidden" onClick={on}>
-            <span className="i-charm-menu-hamburger w-6 h-6" />
-          </button>
+          <div role="toolbar" className="space-x-4 flex items-center">
+            <ToggleDark />
+            <button className="md:hidden" onClick={on}>
+              <span className="i-charm-menu-hamburger w-6 h-6" />
+            </button>
+          </div>
         </div>
       </header>
 
