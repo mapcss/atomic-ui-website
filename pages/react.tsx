@@ -2,11 +2,11 @@ import { memo, useRef } from "react";
 import { dynamic } from "aleph/react";
 import { MDXContent } from "https://esm.sh/@types/mdx/types.d.ts";
 import MDXComponents from "~/components/mdx_components.tsx";
-import TOC from "~/components/table_of_contents.tsx";
 import { Transition, useBoolean } from "@atomic_ui_react/mod.ts";
 import useClickOutside from "~/hooks/use_click_outside.ts";
 import ToggleDark from "~/components/toggle_dark.tsx";
 import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
+import TOCContent from "~/components/toc_content.tsx";
 
 const Portal = dynamic(() => import("~/components/portal.tsx"));
 
@@ -90,14 +90,15 @@ export default function Index(
               >
                 <nav className="p-2">
                   <ul>
-                    <li>
-                      <a
-                        onClick={off}
-                        href="/react/transition"
-                      >
-                        Transition
-                      </a>
-                    </li>
+                    {navLinks.map(({ name, path }) => {
+                      return (
+                        <li key={name}>
+                          <a href={path} onClick={off} className="uppercase">
+                            {name}
+                          </a>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </nav>
               </div>
@@ -147,7 +148,7 @@ export default function Index(
         <aside className="xl:sticky xl:top-[50px] md:hidden xl:block order-1 md:order-3 max-h-screen h-full p-4">
           <h3>On this page</h3>
 
-          <TOC children={pageProps.tableOfContents} />
+          <TOCContent children={pageProps.tableOfContents} />
         </aside>
       </main>
     </>
