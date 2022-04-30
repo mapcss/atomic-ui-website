@@ -65,7 +65,12 @@ const NavigationButton = forwardRef<
 >((props, ref) => {
   const [_, { on }] = useContext(NavigationDrawerContext);
   return (
-    <button ref={ref} {...props} onClick={on}>
+    <button
+      ref={ref}
+      {...props}
+      onClick={on}
+      className="rounded inline-flex items-center backdrop-blur p-1 border-white/30 dark:border-dark-200"
+    >
       <span className="i-charm-menu-hamburger w-6 h-6" />
     </button>
   );

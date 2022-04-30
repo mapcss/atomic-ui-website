@@ -8,6 +8,7 @@ import _Header from "~/components/header.tsx";
 import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
 import _TOCContent from "~/components/toc_content.tsx";
 import NavigationDrawerContext from "~/contexts/react/navigation_drawer.ts";
+import Toolbar from "~/components/toolbar.ts";
 
 const Head = memo(_Head);
 const Header = memo(_Header);
@@ -93,12 +94,20 @@ export default function Index(
                 ref={ref}
                 className="w-2/3 min-w-[300px] max-w-xs h-full bg-gray-100 dark:bg-dark-900 border-r border-gray-200 dark:border-dark-200"
               >
+                <Toolbar className="border-b border-gray-200 dark:border-dark-200 flex justify-end px-2 py-1">
+                  <button
+                    onClick={off}
+                    className="border inline-flex items-center border border-gray-200 dark:border-dark-200 p-1 rounded"
+                  >
+                    <span className="w-6 h-6 i-mdi-close" />
+                  </button>
+                </Toolbar>
                 <nav className="p-2">
                   <ul>
                     {navLinks.map(({ name, path }) => {
                       return (
                         <li key={name}>
-                          <a href={path} onClick={off} className="uppercase">
+                          <a href={path} className="block" onClick={off}>
                             {name}
                           </a>
                         </li>
