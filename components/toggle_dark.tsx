@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Switch,
   Tooltip,
@@ -30,6 +30,11 @@ export default function ToggleDark(): JSX.Element {
     }
   }, [state]);
 
+  const icon = useMemo<string>(
+    () => state ? "i-mdi-moon-waning-crescent" : "i-mdi-weather-sunny",
+    [state],
+  );
+
   return (
     <TooltipProvider>
       {({ ref, isShow }) => (
@@ -37,7 +42,7 @@ export default function ToggleDark(): JSX.Element {
           <Switch
             className={clsx(
               { "bg-dark-900": state, "bg-dark-100": !state },
-              "inline-flex border box-content border-gray-500 dark:border-dark-200 items-center flex-shrink-0 w-[42px] p-0.5 rounded-full cursor-pointer ease-in-out focus:outline-none transition duration-300 focus:ring-2 focus:ring-opacity-75",
+              "text-dark-800 inline-flex border box-content border-gray-500 dark:border-dark-200 items-center flex-shrink-0 w-[40px] p-0.5 rounded-full cursor-pointer ease-in-out focus:outline-none transition duration-300 focus:ring-2 focus:ring-opacity-75",
             )}
             ref={ref}
             isChecked={state}
@@ -46,9 +51,16 @@ export default function ToggleDark(): JSX.Element {
             <span className="sr-only">Toggle dark</span>
             <span
               aria-hidden="true"
-              className={`${state ? "translate-x-5" : "translate-x-0"}
-            pointer-events-none inline-block h-[22px] w-[22px] rounded-full bg-white shadow-lg transform ring-0 transition ease-in-out duration-200`}
-            />
+              className={clsx(
+                {
+                  "translate-x-5": state,
+                  "translate-x-0": !state,
+                },
+                "inline-flex p-0.5 items-center justify-center pointer-events-none rounded-full bg-white shadow-lg transform ring-0 transition ease-in-out duration-200",
+              )}
+            >
+              <span className={clsx(icon, "transition-all duration-500")} />
+            </span>
           </Switch>
           <Transition {...fade} isShow={isShow}>
             <Tooltip className="absolute text-sm bg-gray-50 dark:bg-dark-800 px-1 border border-gray-200 dark:border-dark-200 left-1/2 transform -translate-x-1/2 whitespace-nowrap rounded-md -bottom-6 mx-auto">
