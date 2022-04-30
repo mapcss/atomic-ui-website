@@ -9,7 +9,7 @@ const tooltipClassName =
 
 export default function Header(): JSX.Element {
   return (
-    <header className="px-5 relative z-1 py-2 sticky top-0 backdrop-blur-md border-b bg-white/50 dark:bg-dark-900 border-white/30 dark:border-dark-200">
+    <header className="px-5 z-1 py-2 sticky top-0 backdrop-blur-md border-b bg-white/50 dark:bg-dark-900 border-white/30 dark:border-dark-200">
       <div className="container mx-auto 2xl:px-34 flex justify-between items-center">
         <a href="/">
           <h1 className="xl:px-4 text-xl leading-relaxed">
@@ -22,7 +22,10 @@ export default function Header(): JSX.Element {
           <TooltipProvider>
             {({ ref, isShow }) => (
               <>
-                <NavigationButton ref={ref} className="md:hidden" />
+                <NavigationButton
+                  ref={ref}
+                  className="md:hidden rounded inline-flex items-center backdrop-blur p-1 border-white/30 dark:border-dark-200"
+                />
                 <Transition
                   {...fade}
                   isShow={isShow}
@@ -69,7 +72,6 @@ const NavigationButton = forwardRef<
       ref={ref}
       {...props}
       onClick={on}
-      className="rounded inline-flex items-center backdrop-blur p-1 border-white/30 dark:border-dark-200"
     >
       <span className="i-charm-menu-hamburger w-6 h-6" />
     </button>
