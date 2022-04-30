@@ -13,7 +13,7 @@ import HashLink from "~/components/hash_link.tsx";
 import { isReactElement } from "~/util.ts";
 import { useTimeout } from "@atomic_ui_react/mod.ts";
 import { fade } from "~/utils/transition.ts";
-import { Transition, TooltipProvider, Tooltip } from "@atomic_ui_react/mod.ts";
+import { Tooltip, TooltipProvider, Transition } from "@atomic_ui_react/mod.ts";
 
 const Code: MDXComponents["code"] = (props) => {
   if (isString(props.children)) {
