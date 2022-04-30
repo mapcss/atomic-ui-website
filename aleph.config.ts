@@ -4,6 +4,7 @@ import {
   remarkFrontmatterProps,
   remarkTocProps,
 } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
+import remarkEmoji from "https://esm.sh/remark-emoji";
 import patchImport from "https://crux.land/7K9MjV";
 import injectReact from "https://crux.land/6m9ZEy";
 import mapcss from "~/plugins/mapcss.ts";
@@ -26,6 +27,7 @@ export default <Config> {
         remarkFrontmatterProps,
         remarkTocProps,
         remarkGfm,
+        remarkEmoji,
       ],
       rehypePlugins: [rehypeSlug, rehypeHighlight],
       rewritePagePath: (path) => path.replaceAll("_", "-"),

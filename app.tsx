@@ -7,11 +7,29 @@ export default function App(
   { Page, pageProps }: { Page: FC; pageProps: Record<string, unknown> },
 ) {
   return (
-    <SSRProvider>
+    <>
       <head>
         <meta name="viewport" content="width=device-width" />
+        <script>
+          {`
+        const theme = window.localStorage.getItem("theme");
+        const media = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (
+          theme === "dark" ||
+          (theme === null &&
+            media)
+        ) {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem('theme', 'dark')
+        } else {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem('theme', 'light')
+        }`}
+        </script>
       </head>
-      <Page {...pageProps} />
-    </SSRProvider>
+      <SSRProvider>
+        <Page {...pageProps} />
+      </SSRProvider>
+    </>
   );
 }

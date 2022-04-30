@@ -2,10 +2,17 @@ import { memo, useRef } from "react";
 import { dynamic } from "aleph/react";
 import { MDXContent } from "https://esm.sh/@types/mdx/types.d.ts";
 import MDXComponents from "~/components/mdx_components.tsx";
-import TOC from "~/components/table_of_contents.tsx";
 import { Transition, useBoolean } from "@atomic_ui_react/mod.ts";
 import useClickOutside from "~/hooks/use_click_outside.ts";
+import _Header from "~/components/header.tsx";
 import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
+import _TOCContent from "~/components/toc_content.tsx";
+import NavigationDrawerContext from "~/contexts/react/navigation_drawer.ts";
+import Toolbar from "~/components/toolbar.ts";
+
+const Head = memo(_Head);
+const Header = memo(_Header);
+const TOCContent = memo(_TOCContent);
 
 const Portal = dynamic(() => import("~/components/portal.tsx"));
 
@@ -35,7 +42,6 @@ function _Head(): JSX.Element {
     </head>
   );
 }
-const Head = memo(_Head);
 
 export default function Index(
   { Page, pageProps }: {
@@ -47,23 +53,24 @@ export default function Index(
 ): JSX.Element {
   if (!Page) return <></>;
 
-  const [isShow, { on, off }] = useBoolean();
+  const [isShow, { on, off, toggle }] = useBoolean();
   const ref = useRef<HTMLDivElement>(null);
 
   useClickOutside(ref, off, "mousedown");
 
   return (
-    <>
+    <NavigationDrawerContext.Provider value={[isShow, { on, off, toggle }]}>
       <Head />
       <Portal>
         <Transition
           enter="transition duration-300"
-          enterFrom="opacity-0 backdrop-blur"
-          enterTo="backdrop-blur-md"
-          entered="backdrop-blur-md"
-          leaveFrom="backdrop-blur-md"
+          enterFrom="opacity-0 backdrop-blur-none"
+          enterTo="backdrop-blur"
+          entered="backdrop-blur"
+          leaveFrom="backdrop-blur"
           leave="transition duration-300"
-          leaveTo="opacity-0 backdrop-blur"
+          leaveTo="backdrop-blur-none"
+          leaved="backdrop-blur-none"
           isShow={isShow}
         >
           <div className="fixed z-1 inset-0">
@@ -80,23 +87,32 @@ export default function Index(
               enterFrom="-translate-x-full"
               leave="transform transition duration-300"
               leaveTo="-translate-x-full"
+              isRoot={false}
               immediate
-              isShow={isShow}
             >
               <div
                 ref={ref}
-                className="w-2/3 min-w-[260px] max-w-xs h-full bg-light-100 border-r border-gray-100"
+                className="w-2/3 min-w-[300px] max-w-xs h-full bg-gray-100 dark:bg-dark-900 border-r border-gray-200 dark:border-dark-200"
               >
+                <Toolbar className="border-b border-gray-200 dark:border-dark-200 flex justify-end px-2 py-1">
+                  <button
+                    onClick={off}
+                    className="border inline-flex items-center border border-gray-200 dark:border-dark-200 p-1 rounded"
+                  >
+                    <span className="w-6 h-6 i-mdi-close" />
+                  </button>
+                </Toolbar>
                 <nav className="p-2">
                   <ul>
-                    <li>
-                      <a
-                        onClick={off}
-                        href="/react/transition"
-                      >
-                        Transition
-                      </a>
-                    </li>
+                    {navLinks.map(({ name, path }) => {
+                      return (
+                        <li key={name}>
+                          <a href={path} className="block" onClick={off}>
+                            {name}
+                          </a>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </nav>
               </div>
@@ -105,19 +121,7 @@ export default function Index(
         </Transition>
       </Portal>
 
-      <header className="px-5 relative z-1 py-2 sticky top-0 backdrop-blur-md border-b bg-white/50 border-white/30">
-        <div className="container mx-auto 2xl:px-34 flex justify-between items-center">
-          <a href="/">
-            <h1 className="xl:px-4 text-xl leading-relaxed">
-              Atomic UI
-            </h1>
-          </a>
-
-          <button className="md:hidden" onClick={on}>
-            <span className="i-charm-menu-hamburger w-6 h-6" />
-          </button>
-        </div>
-      </header>
+      <Header />
 
       <main className="container relative z-auto mx-auto grid justify-center grid-cols-1 md:grid-cols-[260px_minmax(0,65ch)] xl:grid-cols-[300px_minmax(auto,65ch)_300px]">
         <article className="prose px-5 order-2 lg:px-8 py-4">
@@ -143,9 +147,9 @@ export default function Index(
         <aside className="xl:sticky xl:top-[50px] md:hidden xl:block order-1 md:order-3 max-h-screen h-full p-4">
           <h3>On this page</h3>
 
-          <TOC children={pageProps.tableOfContents} />
+          <TOCContent children={pageProps.tableOfContents} />
         </aside>
       </main>
-    </>
+    </NavigationDrawerContext.Provider>
   );
 }

@@ -2,6 +2,7 @@ import {
   Children,
   createElement,
   ReactNode,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -11,13 +12,15 @@ import { clsx, isString } from "~/deps.ts";
 import HashLink from "~/components/hash_link.tsx";
 import { isReactElement } from "~/util.ts";
 import { useTimeout } from "@atomic_ui_react/mod.ts";
+import { fade } from "~/utils/transition.ts";
+import { Tooltip, TooltipProvider, Transition } from "@atomic_ui_react/mod.ts";
 
 const Code: MDXComponents["code"] = (props) => {
   if (isString(props.children)) {
     return createElement("code", {
       ...props,
       className:
-        "text-xl px-1 rounded bg-gray-100 border py-0.5 border-gray-200/50",
+        "text-xl px-1 rounded bg-gray-100 dark:bg-dark-800 border py-0.5 border-gray-200/50 dark:border-dark-200",
     });
   }
 
@@ -25,12 +28,16 @@ const Code: MDXComponents["code"] = (props) => {
 
   const [isWaiting, setIsWaiting] = useState(false);
 
+  useEffect(() => {
+    if (!ref.current || !isWaiting) return;
+    globalThis.navigator.clipboard.writeText(
+      ref.current.innerText,
+    );
+  }, [isWaiting]);
+
   useTimeout(
     () => {
-      if (!ref.current || !isWaiting) return;
-      globalThis.navigator.clipboard.writeText(
-        ref.current.innerText,
-      );
+      if (!isWaiting) return;
       setIsWaiting(false);
     },
     { ms: 4000 },
@@ -46,6 +53,10 @@ const Code: MDXComponents["code"] = (props) => {
     [icon],
   );
 
+  const copyLabel = useMemo<string>(() => isWaiting ? "Copied" : "Copy", [
+    isWaiting,
+  ]);
+
   return (
     <>
       <code {...props} ref={ref} />
@@ -53,19 +64,32 @@ const Code: MDXComponents["code"] = (props) => {
         role="toolbar"
         className="absolute opacity-30 transition-opacity duration-500 group-hover:opacity-100 bottom-0 right-0 p-2"
       >
-        <button
-          onClick={() => setIsWaiting(true)}
-          className="sm:mx-0 inline-flex p-1.5 border transition duration-300 focus:outline-none focus:ring backdrop-blur bg-white/20 text-white border-white/20 rounded-md"
-        >
-          <span className={className} />
-        </button>
+        <TooltipProvider>
+          {({ ref, isShow }) => (
+            <>
+              <button
+                ref={ref}
+                onClick={() => setIsWaiting(true)}
+                className="sm:mx-0 inline-flex p-1.5 border transition duration-300 focus:outline-none focus:ring backdrop-blur bg-white/20 text-white border-white/20 rounded-md"
+              >
+                <span className={className} />
+              </button>
+
+              <Transition isShow={isShow} {...fade}>
+                <Tooltip className="absolute text-sm px-1 border backdrop-blur bg-white/20 text-white border-white/20 top-1/2 mr-8.5 right-0 transform -translate-y-1/2 rounded-md mx-auto">
+                  {copyLabel}
+                </Tooltip>
+              </Transition>
+            </>
+          )}
+        </TooltipProvider>
       </div>
     </>
   );
 };
 
 const hashLinkClassName =
-  "hidden sm:inline-flex absolute transition duration-300 delay-200 transform -translate-x-full border border-gray-100 rounded-md p-1 -ml-2 opacity-0 group-hover:opacity-100";
+  "hidden sm:inline-flex absolute transition duration-300 delay-200 transform -translate-x-full border border-gray-100 dark:border-dark-200 rounded-md p-1 -ml-2 opacity-0 group-hover:opacity-100";
 
 const MDXComponents: MDXComponents = {
   h1: ({ children, ...props }) => {
@@ -96,6 +120,24 @@ const MDXComponents: MDXComponents = {
       </h2>
     );
   },
+  h3: ({ children, ...props }) => {
+    return (
+      <h3 {...props} className="relative group">
+        <HashLink
+          href={`#${props.id}`}
+          className={hashLinkClassName}
+        >
+          <span className="i-mdi-link-variant w-5 h-5" />
+        </HashLink>
+
+        <span>{children}</span>
+      </h3>
+    );
+  },
+  a: (props) => {
+    const type = isFootnote(props) ? HashLink : "a";
+    return createElement(type, props);
+  },
   pre: (props) =>
     createElement("pre", {
       className: "relative group -mx-5 sm:mx-0",
@@ -107,14 +149,17 @@ const MDXComponents: MDXComponents = {
   thead: (props) =>
     createElement("tbody", {
       ...props,
-      className: "border-b-2 border-gray-200",
+      className: "border-b-2 border-gray-200 dark:border-dark-200",
     }),
   tbody: (props) =>
-    createElement("tbody", { ...props, className: "divide-y divide-gray-200" }),
+    createElement("tbody", {
+      ...props,
+      className: "divide-y divide-gray-200 dark:divide-dark-200",
+    }),
   tr: (props) => {
     const className = isTHeadTh(props.children)
       ? undefined
-      : "hover:bg-gray-100 transition-colors";
+      : "hover:bg-gray-100 hover:dark:bg-dark-100 transition-colors";
     return createElement("tr", { ...props, className });
   },
 };
@@ -128,6 +173,18 @@ function isTHeadTh(
     }
   }
   return false;
+}
+
+function isFootnote(
+  props:
+    & React.DetailedHTMLProps<
+      React.AnchorHTMLAttributes<HTMLAnchorElement>,
+      HTMLAnchorElement
+    >
+    & { "data-footnote-ref"?: boolean; "data-footnote-backref"?: boolean },
+): boolean {
+  return props["data-footnote-ref"] === true ||
+    props["data-footnote-backref"] === true;
 }
 
 export default MDXComponents;
