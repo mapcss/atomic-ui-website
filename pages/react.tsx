@@ -10,10 +10,13 @@ import {
 } from "@atomic_ui_react/mod.ts";
 import useClickOutside from "~/hooks/use_click_outside.ts";
 import ToggleDark from "~/components/toggle_dark.tsx";
+import { fade } from "~/utils/transition.ts";
 import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
 import TOCContent from "~/components/toc_content.tsx";
 
 const Portal = dynamic(() => import("~/components/portal.tsx"));
+const tooltipClassName =
+  "absolute text-sm bg-gray-50 dark:bg-dark-800 px-1 border border-gray-200 dark:border-dark-200 left-1/2 transform -translate-x-1/2 whitespace-nowrap rounded-md -bottom-6 mx-auto";
 
 type NavLink = {
   name: string;
@@ -129,15 +132,27 @@ export default function Index(
                     <span className="i-charm-menu-hamburger w-6 h-6" />
                   </button>
                   <Transition
-                    enterFrom="opacity-0"
-                    enter="transition"
-                    leaveTo="opacity-0"
-                    leave="transition"
+                    {...fade}
                     isShow={isShow}
                   >
-                    <Tooltip className="absolute text-sm bg-gray-50 dark:bg-dark-800 px-1 border border-gray-200 dark:border-dark-200 left-1/2 transform -translate-x-1/2 whitespace-nowrap rounded-md -bottom-6 mx-auto">
+                    <Tooltip className={tooltipClassName}>
                       Menu
                     </Tooltip>
+                  </Transition>
+                </>
+              )}
+            </TooltipProvider>
+            <TooltipProvider wrapper={({ref, ...props}) => <div className="relative hidden md:block" {...props} />}>
+              {({ ref, isShow }) => (
+                <>
+                  <a
+                    ref={ref}
+                    href="https://github.com/mapcss/atomic-ui-react"
+                    target="_blank"
+                    className="hover:opacity-50 transition duration-300 i-mdi-github w-6 h-6"
+                  />
+                  <Transition {...fade} isShow={isShow}>
+                    <Tooltip className={tooltipClassName}>GitHub</Tooltip>
                   </Transition>
                 </>
               )}
