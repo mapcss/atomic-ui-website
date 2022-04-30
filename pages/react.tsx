@@ -142,7 +142,11 @@ export default function Index(
                 </>
               )}
             </TooltipProvider>
-            <TooltipProvider wrapper={({ref, ...props}) => <div className="relative hidden md:block" {...props} />}>
+            <TooltipProvider
+              wrapper={({ ref, ...props }) => (
+                <div className="relative hidden md:block" {...props} />
+              )}
+            >
               {({ ref, isShow }) => (
                 <>
                   <a
