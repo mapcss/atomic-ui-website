@@ -15,6 +15,5 @@ export default function Portal(
   if (!container) return <></>;
   const el = lazyEval(container) as Element | null;
   const portal = el ? createPortal(children, el) : <></>;
-  console.log(portal);
   return portal;
 }
