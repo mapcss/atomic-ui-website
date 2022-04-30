@@ -2,21 +2,18 @@ import { memo, useRef } from "react";
 import { dynamic } from "aleph/react";
 import { MDXContent } from "https://esm.sh/@types/mdx/types.d.ts";
 import MDXComponents from "~/components/mdx_components.tsx";
-import {
-  Tooltip,
-  TooltipProvider,
-  Transition,
-  useBoolean,
-} from "@atomic_ui_react/mod.ts";
+import { Transition, useBoolean } from "@atomic_ui_react/mod.ts";
 import useClickOutside from "~/hooks/use_click_outside.ts";
-import ToggleDark from "~/components/toggle_dark.tsx";
-import { fade } from "~/utils/transition.ts";
+import _Header from "~/components/header.tsx";
 import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
-import TOCContent from "~/components/toc_content.tsx";
+import _TOCContent from "~/components/toc_content.tsx";
+import NavigationDrawerContext from "~/contexts/react/navigation_drawer.ts";
+
+const Head = memo(_Head);
+const Header = memo(_Header);
+const TOCContent = memo(_TOCContent);
 
 const Portal = dynamic(() => import("~/components/portal.tsx"));
-const tooltipClassName =
-  "absolute text-sm bg-gray-50 dark:bg-dark-800 px-1 border border-gray-200 dark:border-dark-200 left-1/2 transform -translate-x-1/2 whitespace-nowrap rounded-md -bottom-6 mx-auto";
 
 type NavLink = {
   name: string;
@@ -44,7 +41,6 @@ function _Head(): JSX.Element {
     </head>
   );
 }
-const Head = memo(_Head);
 
 export default function Index(
   { Page, pageProps }: {
@@ -56,23 +52,24 @@ export default function Index(
 ): JSX.Element {
   if (!Page) return <></>;
 
-  const [isShow, { on, off }] = useBoolean();
+  const [isShow, { on, off, toggle }] = useBoolean();
   const ref = useRef<HTMLDivElement>(null);
 
   useClickOutside(ref, off, "mousedown");
 
   return (
-    <>
+    <NavigationDrawerContext.Provider value={[isShow, { on, off, toggle }]}>
       <Head />
       <Portal>
         <Transition
           enter="transition duration-300"
-          enterFrom="opacity-0 backdrop-blur"
-          enterTo="backdrop-blur-md"
-          entered="backdrop-blur-md"
-          leaveFrom="backdrop-blur-md"
+          enterFrom="opacity-0 backdrop-blur-none"
+          enterTo="backdrop-blur"
+          entered="backdrop-blur"
+          leaveFrom="backdrop-blur"
           leave="transition duration-300"
-          leaveTo="opacity-0 backdrop-blur"
+          leaveTo="backdrop-blur-none"
+          leaved="backdrop-blur-none"
           isShow={isShow}
         >
           <div className="fixed z-1 inset-0">
@@ -89,12 +86,12 @@ export default function Index(
               enterFrom="-translate-x-full"
               leave="transform transition duration-300"
               leaveTo="-translate-x-full"
+              isRoot={false}
               immediate
-              isShow={isShow}
             >
               <div
                 ref={ref}
-                className="w-2/3 min-w-[260px] max-w-xs h-full bg-gray-100 dark:bg-dark-900 border-r border-gray-200 dark:border-dark-200"
+                className="w-2/3 min-w-[300px] max-w-xs h-full bg-gray-100 dark:bg-dark-900 border-r border-gray-200 dark:border-dark-200"
               >
                 <nav className="p-2">
                   <ul>
@@ -115,55 +112,7 @@ export default function Index(
         </Transition>
       </Portal>
 
-      <header className="px-5 relative z-1 py-2 sticky top-0 backdrop-blur-md border-b bg-white/50 dark:bg-dark-900 border-white/30 dark:border-dark-200">
-        <div className="container mx-auto 2xl:px-34 flex justify-between items-center">
-          <a href="/">
-            <h1 className="xl:px-4 text-xl leading-relaxed">
-              Atomic UI
-            </h1>
-          </a>
-
-          <div role="toolbar" className="space-x-4 flex items-center">
-            <ToggleDark />
-            <TooltipProvider>
-              {({ ref, isShow }) => (
-                <>
-                  <button ref={ref} className="md:hidden" onClick={on}>
-                    <span className="i-charm-menu-hamburger w-6 h-6" />
-                  </button>
-                  <Transition
-                    {...fade}
-                    isShow={isShow}
-                  >
-                    <Tooltip className={tooltipClassName}>
-                      Menu
-                    </Tooltip>
-                  </Transition>
-                </>
-              )}
-            </TooltipProvider>
-            <TooltipProvider
-              wrapper={({ ref, ...props }) => (
-                <div className="relative hidden md:block" {...props} />
-              )}
-            >
-              {({ ref, isShow }) => (
-                <>
-                  <a
-                    ref={ref}
-                    href="https://github.com/mapcss/atomic-ui-react"
-                    target="_blank"
-                    className="hover:opacity-50 transition duration-300 i-mdi-github w-6 h-6"
-                  />
-                  <Transition {...fade} isShow={isShow}>
-                    <Tooltip className={tooltipClassName}>GitHub</Tooltip>
-                  </Transition>
-                </>
-              )}
-            </TooltipProvider>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="container relative z-auto mx-auto grid justify-center grid-cols-1 md:grid-cols-[260px_minmax(0,65ch)] xl:grid-cols-[300px_minmax(auto,65ch)_300px]">
         <article className="prose px-5 order-2 lg:px-8 py-4">
@@ -192,6 +141,6 @@ export default function Index(
           <TOCContent children={pageProps.tableOfContents} />
         </aside>
       </main>
-    </>
+    </NavigationDrawerContext.Provider>
   );
 }
