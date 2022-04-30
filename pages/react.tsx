@@ -2,13 +2,16 @@ import { memo, useRef } from "react";
 import { dynamic } from "aleph/react";
 import { MDXContent } from "https://esm.sh/@types/mdx/types.d.ts";
 import MDXComponents from "~/components/mdx_components.tsx";
-import { Transition, useBoolean } from "@atomic_ui_react/mod.ts";
+import {
+  Tooltip,
+  TooltipProvider,
+  Transition,
+  useBoolean,
+} from "@atomic_ui_react/mod.ts";
 import useClickOutside from "~/hooks/use_click_outside.ts";
 import ToggleDark from "~/components/toggle_dark.tsx";
 import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
 import TOCContent from "~/components/toc_content.tsx";
-import TooltipProvider from "~/components/tooltip_provider.tsx";
-import Tooltip from "~/components/tooltip.ts";
 
 const Portal = dynamic(() => import("~/components/portal.tsx"));
 
@@ -132,7 +135,7 @@ export default function Index(
                     leave="transition"
                     isShow={isShow}
                   >
-                    <Tooltip className="absolute bg-gray-50 dark:bg-dark-800 px-1 border border-gray-200 dark:border-dark-200 left-1/2 transform -translate-x-1/2 rounded-md -bottom-8 mx-auto">
+                    <Tooltip className="absolute text-sm bg-gray-50 dark:bg-dark-800 px-1 border border-gray-200 dark:border-dark-200 left-1/2 transform -translate-x-1/2 whitespace-nowrap rounded-md -bottom-6 mx-auto">
                       Menu
                     </Tooltip>
                   </Transition>

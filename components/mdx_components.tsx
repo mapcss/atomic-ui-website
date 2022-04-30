@@ -13,9 +13,7 @@ import HashLink from "~/components/hash_link.tsx";
 import { isReactElement } from "~/util.ts";
 import { useTimeout } from "@atomic_ui_react/mod.ts";
 import { fade } from "~/utils/transition.ts";
-import TooltipProvider from "~/components/tooltip_provider.tsx";
-import Tooltip from "~/components/tooltip.ts";
-import { Transition } from "@atomic_ui_react/mod.ts";
+import { Transition, TooltipProvider, Tooltip } from "@atomic_ui_react/mod.ts";
 
 const Code: MDXComponents["code"] = (props) => {
   if (isString(props.children)) {
@@ -91,7 +89,7 @@ const Code: MDXComponents["code"] = (props) => {
 };
 
 const hashLinkClassName =
-  "hidden sm:inline-flex absolute transition duration-300 delay-200 transform -translate-x-full border border-gray-100 rounded-md p-1 -ml-2 opacity-0 group-hover:opacity-100";
+  "hidden sm:inline-flex absolute transition duration-300 delay-200 transform -translate-x-full border border-gray-100 dark:border-dark-200 rounded-md p-1 -ml-2 opacity-0 group-hover:opacity-100";
 
 const MDXComponents: MDXComponents = {
   h1: ({ children, ...props }) => {
