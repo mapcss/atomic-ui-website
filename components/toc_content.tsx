@@ -2,13 +2,20 @@ import { DependencyList, useEffect, useRef, useState } from "react";
 import { clsx } from "~/deps.ts";
 import TOC from "~/components/toc.tsx";
 import HashLink from "~/components/hash_link.tsx";
-import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
+import { filterTruthy } from "@atomic_ui_react/deps.ts";
+import type {
+  TableOfContents,
+} from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
 
 type Props = {
   children?: TableOfContents;
 };
 
 export default function TOCContent({ children }: Props): JSX.Element {
+  const _children = {
+    items: filterTruthy(children?.items?.map(({ items }) => items) ?? [])
+      .flat(),
+  };
   const [activeId, setActiveId] = useState<string | undefined>();
   useIntersection(() =>
     new IntersectionObserver((entry) => {
@@ -22,10 +29,11 @@ export default function TOCContent({ children }: Props): JSX.Element {
 
   return (
     <TOC
+      depth={2}
       ul={({ className, ...rest }, { depth }) => (
         <ul
           {...rest}
-          className={clsx(className, "text-sm leading-6", 1 < depth && "pl-3")}
+          className={clsx(className, "text-sm leading-6", 2 < depth && "pl-3")}
         />
       )}
       a={({ className, href, ...rest }) => {
@@ -41,7 +49,7 @@ export default function TOCContent({ children }: Props): JSX.Element {
           />
         );
       }}
-      children={children}
+      children={_children}
     />
   );
 }
