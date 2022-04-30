@@ -63,11 +63,7 @@ export default <Config> {
       },
     }),
   ],
-  css: [preflightCSS, {
-    "*": {
-      scrollPaddingTop: "50px",
-    },
-  }],
+  css: [preflightCSS],
   postcssPlugin: [autoprefixer],
   cssMap: {
     max: {

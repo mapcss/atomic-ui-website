@@ -1,7 +1,8 @@
-import { DependencyList, useEffect, useRef, useState } from "react";
+import { DependencyList, useContext, useEffect, useState } from "react";
 import { clsx } from "~/deps.ts";
 import TOC from "~/components/toc.tsx";
 import HashLink from "~/components/hash_link.tsx";
+import ArticleRefContext from "~/contexts/react/article_ref.ts";
 import { filterTruthy } from "@atomic_ui_react/deps.ts";
 import type {
   TableOfContents,
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export default function TOCContent({ children }: Props): JSX.Element {
+  const ref = useContext(ArticleRefContext);
   const _children = {
     items: filterTruthy(children?.items?.map(({ items }) => items) ?? [])
       .flat(),
@@ -19,12 +21,19 @@ export default function TOCContent({ children }: Props): JSX.Element {
   const [activeId, setActiveId] = useState<string | undefined>();
   useIntersection(() =>
     new IntersectionObserver((entry) => {
-      entry.forEach(({ target }) => {
-        setActiveId(`#${target.id}`);
+      entry.forEach(({ target, isIntersecting }) => {
+        const children = target.firstElementChild;
+        if (!children) return;
+        const id = `#${children.id}`;
+        if (isIntersecting) {
+          setActiveId(id);
+        }
       });
-    }), () => {
-    const el = document.querySelectorAll("h2,h3");
-    return el;
+    }, { root: null, rootMargin: "-50% 0px", threshold: 0 }), () => {
+    if (!ref.current) return;
+    const el = ref.current.querySelectorAll("section > h2, section > h3");
+    const sections = filterTruthy(Array.from(el).map((a) => a.parentElement));
+    return sections;
   }, []);
 
   return (
@@ -65,7 +74,6 @@ function useIntersection(
     const _intersectionObserver = intersectionObserver();
 
     const __target = _target instanceof Element ? [_target] : _target;
-
     Array.from(__target).forEach((el) => {
       _intersectionObserver.observe(el);
     });
