@@ -27,6 +27,9 @@ const navLinks: NavLink[] = [{
 }, {
   name: "Switch",
   path: "/react/switch",
+}, {
+  name: "Disclosure",
+  path: "/react/disclosure",
 }];
 
 function _Head(): JSX.Element {
@@ -47,7 +50,7 @@ function _Head(): JSX.Element {
 export default function Index(
   { Page, pageProps }: {
     Page?: MDXContent;
-    pageProps: {
+    pageProps?: {
       tableOfContents?: TableOfContents;
     };
   },
@@ -150,7 +153,7 @@ export default function Index(
           <aside className="xl:sticky xl:top-[50px] md:hidden xl:block order-1 md:order-3 max-h-screen h-full p-4">
             <h3>On this page</h3>
 
-            <TOCContent children={pageProps.tableOfContents} />
+            <TOCContent children={pageProps?.tableOfContents} />
           </aside>
         </main>
       </ArticleRefContext.Provider>
