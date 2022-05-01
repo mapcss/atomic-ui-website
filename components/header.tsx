@@ -37,10 +37,7 @@ export default function Header(): JSX.Element {
               </>
             )}
           </TooltipProvider>
-          <TooltipProvider
-
-            className="hidden md:block"
-          >
+          <TooltipProvider className="hidden md:block">
             {({ ref, isShow }) => (
               <>
                 <a
