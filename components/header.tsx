@@ -38,9 +38,8 @@ export default function Header(): JSX.Element {
             )}
           </TooltipProvider>
           <TooltipProvider
-            wrapper={({ ref, ...props }) => (
-              <div className="relative hidden md:block" {...props} />
-            )}
+
+            className="hidden md:block"
           >
             {({ ref, isShow }) => (
               <>
