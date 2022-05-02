@@ -2,14 +2,22 @@ import { memo, useRef } from "react";
 import { dynamic } from "aleph/react";
 import { MDXContent } from "https://esm.sh/@types/mdx/types.d.ts";
 import MDXComponents from "~/components/mdx_components.tsx";
-import { Transition, useBoolean } from "@atomic_ui_react/mod.ts";
-import useClickOutside from "~/hooks/use_click_outside.ts";
+import {
+  Disclosure,
+  Transition,
+  useBoolean,
+  useOutside,
+  WithDisclosureTarget,
+  WithDisclosureTrigger,
+} from "@atomic_ui_react/mod.ts";
 import _Header from "~/components/header.tsx";
 import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
 import _TOCContent from "~/components/toc_content.tsx";
 import NavigationDrawerContext from "~/contexts/react/navigation_drawer.ts";
 import ArticleRefContext from "~/contexts/react/article_ref.ts";
 import Toolbar from "~/components/toolbar.ts";
+import { fade } from "~/utils/transition.ts";
+import { clsx } from "~/deps.ts";
 
 const Head = memo(_Head);
 const Header = memo(_Header);
@@ -61,7 +69,15 @@ export default function Index(
   const ref = useRef<HTMLDivElement>(null);
   const articleRef = useRef<HTMLElement>(null);
 
-  useClickOutside(ref, off, "mousedown");
+  useOutside(
+    {
+      target: ref,
+      callback: () => {},
+      event: "mousedown",
+    },
+    undefined,
+    [],
+  );
 
   return (
     <NavigationDrawerContext.Provider value={[isShow, { on, off, toggle }]}>
@@ -151,9 +167,40 @@ export default function Index(
           </aside>
 
           <aside className="xl:sticky xl:top-[50px] md:hidden xl:block order-1 md:order-3 max-h-screen h-full p-4">
-            <h3>On this page</h3>
+            <h3 className="hidden md:block">
+              On this page
+            </h3>
+            <Disclosure isDefaultOpen>
+              <WithDisclosureTrigger>
+                {(attrs, { isOpen }) => (
+                  <button
+                    {...attrs}
+                    className="flex w-full justify-center items-center space-x-2 md:hidden rounded p-1 dark:border-dark-200 mb-2"
+                  >
+                    <span className="uppercase">
+                      Table Of Contents
+                    </span>
 
-            <TOCContent children={pageProps?.tableOfContents} />
+                    <span
+                      className={clsx(
+                        "i-mdi-chevron-down w-5 h-5 transition transform duration-300",
+                        { "-rotate-180": !isOpen },
+                      )}
+                    />
+                  </button>
+                )}
+              </WithDisclosureTrigger>
+
+              <WithDisclosureTarget>
+                {(props, { isOpen }) => (
+                  <Transition {...fade} isShow={isOpen}>
+                    <nav {...props}>
+                      <TOCContent children={pageProps?.tableOfContents} />
+                    </nav>
+                  </Transition>
+                )}
+              </WithDisclosureTarget>
+            </Disclosure>
           </aside>
         </main>
       </ArticleRefContext.Provider>
