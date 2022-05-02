@@ -1,4 +1,4 @@
-import { memo, useRef } from "react";
+import { memo, useRef, useState } from "react";
 import { dynamic } from "aleph/react";
 import { MDXContent } from "https://esm.sh/@types/mdx/types.d.ts";
 import MDXComponents from "~/components/mdx_components.tsx";
@@ -18,12 +18,15 @@ import ArticleRefContext from "~/contexts/react/article_ref.ts";
 import Toolbar from "~/components/toolbar.ts";
 import { fade } from "~/utils/transition.ts";
 import { clsx } from "~/deps.ts";
+import useIntersection from "~/hooks/use_intersection.ts";
+import { filterTruthy } from "@atomic_ui_react/deps.ts";
 
 const Head = memo(_Head);
 const Header = memo(_Header);
 const TOCContent = memo(_TOCContent);
 
 const Portal = dynamic(() => import("~/components/portal.tsx"));
+const HashLink = dynamic(() => import("~/components/hash_link.tsx"));
 
 type NavLink = {
   name: string;
@@ -72,6 +75,33 @@ export default function Index(
   const [isShow, { on, off, toggle }] = useBoolean();
   const ref = useRef<HTMLDivElement>(null);
   const articleRef = useRef<HTMLElement>(null);
+
+  const [activeAttr, setActiveAttr] = useState<
+    Pick<Element, "id" | "textContent"> | undefined
+  >();
+
+  useIntersection({
+    target: () => {
+      if (!articleRef.current) return;
+      const el = articleRef.current.querySelectorAll(
+        "section > h1, section > h2, section > h3, section > h4",
+      );
+      const sections = filterTruthy(Array.from(el).map((a) => a.parentElement));
+      return sections;
+    },
+    instance: () => {
+      return new IntersectionObserver((entry) => {
+        entry.forEach(({ target, isIntersecting }) => {
+          const children = target.firstElementChild;
+          if (!children) return;
+          const id = `#${children.id}`;
+          if (isIntersecting) {
+            setActiveAttr({ id, textContent: children.textContent });
+          }
+        });
+      }, { root: null, rootMargin: "-50% 0px", threshold: 0 });
+    },
+  }, [Page]);
 
   useOutside(
     {
@@ -151,7 +181,7 @@ export default function Index(
 
         <div className="max-w-7xl px-5 sm:px-12 lg:px-4 xl:px-0 mx-auto grid gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] justify-center grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.5fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)]">
           <div className="order-2 md:py-8">
-            <aside className="sticky z-1 -mx-5 sm:mx-0 px-5 sm:px-0 top-[50px] border-2 border-white dark:border-dark-900 bg-white dark:bg-dark-900">
+            <aside className="sticky z-1 whitespace-nowrap overflow-x-scroll -mx-5 sm:mx-0 px-5 sm:px-0 top-[50px] border-2 border-white dark:border-dark-900 bg-white dark:bg-dark-900">
               <nav>
                 <ol className="space-x-2 flex items-center">
                   {[{ name: "Home", path: "/react" }, {
@@ -167,6 +197,15 @@ export default function Index(
                       </li>
                     );
                   })}
+
+                  <Transition isShow={!!activeAttr} {...fade}>
+                    <li className="space-x-1 inline-flex items-center text-amber-500">
+                      <span className="i-mdi-music-accidental-sharp" />
+                      <HashLink href={activeAttr?.id}>
+                        {activeAttr?.textContent}
+                      </HashLink>
+                    </li>
+                  </Transition>
                 </ol>
               </nav>
             </aside>

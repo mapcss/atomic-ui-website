@@ -1,9 +1,10 @@
-import { DependencyList, useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { clsx } from "~/deps.ts";
 import TOC from "~/components/toc.tsx";
 import HashLink from "~/components/hash_link.tsx";
 import ArticleRefContext from "~/contexts/react/article_ref.ts";
 import { filterTruthy } from "@atomic_ui_react/deps.ts";
+import useIntersection from "~/hooks/use_intersection.ts";
 import type {
   TableOfContents,
 } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
@@ -19,21 +20,24 @@ export default function TOCContent({ children }: Props): JSX.Element {
       .flat(),
   };
   const [activeId, setActiveId] = useState<string | undefined>();
-  useIntersection(() =>
-    new IntersectionObserver((entry) => {
-      entry.forEach(({ target, isIntersecting }) => {
-        const children = target.firstElementChild;
-        if (!children) return;
-        const id = `#${children.id}`;
-        if (isIntersecting) {
-          setActiveId(id);
-        }
-      });
-    }, { root: null, rootMargin: "-50% 0px", threshold: 0 }), () => {
-    if (!ref.current) return;
-    const el = ref.current.querySelectorAll("section > h2, section > h3");
-    const sections = filterTruthy(Array.from(el).map((a) => a.parentElement));
-    return sections;
+  useIntersection({
+    instance: () =>
+      new IntersectionObserver((entry) => {
+        entry.forEach(({ target, isIntersecting }) => {
+          const children = target.firstElementChild;
+          if (!children) return;
+          const id = `#${children.id}`;
+          if (isIntersecting) {
+            setActiveId(id);
+          }
+        });
+      }, { root: null, rootMargin: "-50% 0px", threshold: 0 }),
+    target: () => {
+      if (!ref.current) return;
+      const el = ref.current.querySelectorAll("section > h2, section > h3");
+      const sections = filterTruthy(Array.from(el).map((a) => a.parentElement));
+      return sections;
+    },
   }, [JSON.stringify(children)]);
 
   return (
@@ -61,25 +65,4 @@ export default function TOCContent({ children }: Props): JSX.Element {
       children={_children}
     />
   );
-}
-
-function useIntersection(
-  intersectionObserver: () => IntersectionObserver,
-  target: () => Element | Iterable<Element> | undefined | null,
-  deps?: DependencyList,
-): void {
-  useEffect(() => {
-    const _target = target();
-    if (!_target) return;
-    const _intersectionObserver = intersectionObserver();
-
-    const __target = _target instanceof Element ? [_target] : _target;
-    Array.from(__target).forEach((el) => {
-      _intersectionObserver.observe(el);
-    });
-
-    return () => {
-      _intersectionObserver.disconnect();
-    };
-  }, deps);
 }
