@@ -60,6 +60,9 @@ export default function Index(
     Page?: MDXContent;
     pageProps?: {
       tableOfContents?: TableOfContents;
+      meta: {
+        title: string;
+      };
     };
   },
 ): JSX.Element {
@@ -145,42 +148,46 @@ export default function Index(
 
         <Header />
 
-        <main className="container relative z-auto mx-auto grid justify-center grid-cols-1 md:grid-cols-[260px_minmax(0,65ch)] xl:grid-cols-[300px_minmax(auto,65ch)_300px]">
-          <article ref={articleRef} className="prose px-5 order-2 lg:px-8 py-4">
-            <Disclosure>
-              <WithDisclosureTrigger>
-                {(attrs, { isOpen }) => (
-                  <button
-                    {...attrs}
-                    className="flex w-full justify-center items-center xl:hidden space-x-2 rounded p-1 dark:border-dark-200 mb-4"
-                  >
-                    <span className="uppercase">
-                      Table Of Contents
-                    </span>
+        <div className="container mx-auto grid justify-center grid-cols-1 md:grid-cols-[260px_minmax(0,65ch)] xl:grid-cols-[300px_minmax(auto,65ch)_300px]">
+          <main className="order-2">
+            <article
+              ref={articleRef}
+              className="prose px-5 lg:px-8 py-4"
+            >
+              <Disclosure>
+                <WithDisclosureTrigger>
+                  {(attrs, { isOpen }) => (
+                    <button
+                      {...attrs}
+                      className="flex w-full justify-center items-center xl:hidden space-x-2 rounded p-1 dark:border-dark-200 mb-4"
+                    >
+                      <span className="uppercase">
+                        Table Of Contents
+                      </span>
 
-                    <span
-                      className={clsx(
-                        "i-mdi-chevron-down w-5 h-5 transition transform duration-300",
-                        { "-rotate-180": !isOpen },
-                      )}
-                    />
-                  </button>
-                )}
-              </WithDisclosureTrigger>
+                      <span
+                        className={clsx(
+                          "i-mdi-chevron-down w-5 h-5 transition transform duration-300",
+                          { "-rotate-180": !isOpen },
+                        )}
+                      />
+                    </button>
+                  )}
+                </WithDisclosureTrigger>
 
-              <WithDisclosureTarget>
-                {(props, { isOpen }) => (
-                  <Transition {...fade} isShow={isOpen}>
-                    <nav {...props} className="xl:hidden">
-                      <TOCContent children={pageProps?.tableOfContents} />
-                    </nav>
-                  </Transition>
-                )}
-              </WithDisclosureTarget>
-            </Disclosure>
-            <Page components={MDXComponents} />
-          </article>
-
+                <WithDisclosureTarget>
+                  {(props, { isOpen }) => (
+                    <Transition {...fade} isShow={isOpen}>
+                      <nav {...props} className="xl:hidden">
+                        <TOCContent children={pageProps?.tableOfContents} />
+                      </nav>
+                    </Transition>
+                  )}
+                </WithDisclosureTarget>
+              </Disclosure>
+              <Page components={MDXComponents} />
+            </article>
+          </main>
           <aside className="hidden sticky top-[50px] md:block order-1 max-h-screen h-full p-4">
             <nav>
               <ul>
@@ -206,7 +213,7 @@ export default function Index(
               <TOCContent children={pageProps?.tableOfContents} />
             </nav>
           </aside>
-        </main>
+        </div>
       </ArticleRefContext.Provider>
     </NavigationDrawerContext.Provider>
   );
