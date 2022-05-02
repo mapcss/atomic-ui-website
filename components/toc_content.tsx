@@ -34,7 +34,7 @@ export default function TOCContent({ children }: Props): JSX.Element {
     const el = ref.current.querySelectorAll("section > h2, section > h3");
     const sections = filterTruthy(Array.from(el).map((a) => a.parentElement));
     return sections;
-  }, []);
+  }, [JSON.stringify(children)]);
 
   return (
     <TOC
@@ -69,6 +69,8 @@ function useIntersection(
   deps?: DependencyList,
 ): void {
   useEffect(() => {
+    console.log(2);
+
     const _target = target();
     if (!_target) return;
     const _intersectionObserver = intersectionObserver();

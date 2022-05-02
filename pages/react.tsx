@@ -60,13 +60,14 @@ export default function Index(
     Page?: MDXContent;
     pageProps?: {
       tableOfContents?: TableOfContents;
-      meta: {
-        title: string;
-      };
     };
   },
 ): JSX.Element {
+  const title = pageProps?.tableOfContents?.items?.[0].title;
   if (!Page) return <></>;
+  if (!title) {
+    throw Error("title is not exist");
+  }
 
   const [isShow, { on, off, toggle }] = useBoolean();
   const ref = useRef<HTMLDivElement>(null);
@@ -154,7 +155,7 @@ export default function Index(
               <nav>
                 <ol className="space-x-2 flex items-center">
                   {[{ name: "Home", path: "/react" }, {
-                    name: pageProps?.meta.title,
+                    name: title,
                   }].map(({ name, path }, i) => {
                     return (
                       <li
