@@ -146,34 +146,36 @@ export default function Index(
           </Transition>
         </Portal>
 
-        <Header className="h-[50px] sticky top-0 z-1 flex justify-center px-5 sm:px-12 lg:px-4 xl:px-0 backdrop-blur-md border-b bg-white/50 dark:bg-dark-900 border-white/30 dark:border-dark-200" />
+        <Header className="h-[50px] sticky top-0 z-2 flex justify-center px-5 sm:px-12 lg:px-4 xl:px-0 border-b bg-white dark:bg-dark-900 border-white/30 dark:border-dark-200" />
 
         <div className="max-w-7xl px-5 sm:px-12 lg:px-4 xl:px-0 mx-auto grid gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] justify-center grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.5fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)]">
           <div className="order-2 md:py-8">
-            <nav>
-              <ol className="space-x-2 flex items-center">
-                {[{ name: "Home", path: "/react" }, {
-                  name: pageProps?.meta.title,
-                }].map(({ name, path }, i) => {
-                  return (
-                    <li
-                      className="space-x-1 inline-flex items-center"
-                      key={name}
-                    >
-                      {!!i && <span className="i-mdi-chevron-right" />}
-                      <a href={path}>{name}</a>
-                    </li>
-                  );
-                })}
-              </ol>
-            </nav>
+            <aside className="sticky z-1 -mx-5 sm:mx-0 px-5 sm:px-0 top-[50px] border-2 border-white dark:border-dark-900 bg-white dark:bg-dark-900">
+              <nav>
+                <ol className="space-x-2 flex items-center">
+                  {[{ name: "Home", path: "/react" }, {
+                    name: pageProps?.meta.title,
+                  }].map(({ name, path }, i) => {
+                    return (
+                      <li
+                        className="space-x-1 inline-flex items-center"
+                        key={name}
+                      >
+                        {!!i && <span className="i-mdi-chevron-right" />}
+                        <a href={path}>{name}</a>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </nav>
+            </aside>
 
             <Disclosure>
               <WithDisclosureTrigger>
                 {(attrs, { isOpen }) => (
                   <button
                     {...attrs}
-                    className="flex w-full justify-center items-center xl:hidden space-x-2 rounded p-1 dark:border-dark-200 my-4"
+                    className="flex w-full justify-center items-center lg:hidden space-x-2 rounded p-1 dark:border-dark-200 my-4"
                   >
                     <span className="uppercase">
                       Table Of Contents
