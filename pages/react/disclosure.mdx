@@ -1,9 +1,48 @@
 # Disclosure
 
-import { DisclosureProvider, Transition } from "@atomic_ui_react/mod.ts";
+import {
+  DisclosureProvider,
+  Transition,
+  Disclosure,
+  WithDisclosureTrigger,
+  WithDisclosureTarget,
+} from "@atomic_ui_react/mod.ts";
 import Playground from "~/components/playground.tsx";
 
 The Disclosure is a button that visually controls a piece of content.
+
+## Feature
+
+- No DOM
+
+  There is no actual DOM. It provides DOM Attributes by wrapping them around any component.
+
+- SSR friendly
+
+  By default, when a disclosure is closed, it does not remove the disclosure content from the DOM. This is important for SEO.
+
+  Instead, it provides display: none as a style. This behavior is **completely controllable**.
+
+export const BasicExample = () => {
+  return (
+    <div className="bg-white p-2 rounded-xl space-y-2">
+      {contents.map(({ title, content }) => {
+        return (
+          <Disclosure key={title}>
+            <WithDisclosureTrigger>
+              <button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-purple-900 bg-purple-100 rounded-lg hover:bg-purple-200 focus:outline-none focus:ring focus:ring-purple-500 focus:ring-opacity-75">
+                {title}
+              </button>
+            </WithDisclosureTrigger>
+            <WithDisclosureTarget>
+              <p className="px-4 pb-2 text-sm text-gray-500">{content}</p>
+            </WithDisclosureTarget>
+          </Disclosure>
+        );
+      })}
+    </div>
+  );
+};
 
 export const contents = [
   {
@@ -15,6 +54,16 @@ export const contents = [
     content: `You should come to the Parking office and report the loss. There is a fee to replace your lost permit. However, if your permit was stolen, a copy of a police report needs to be submitted along with a stolen parking permit form for a fee replacement exemption.`,
   },
 ];
+
+## Quick View
+
+<Playground preview={<BasicExample />}>
+
+```ts
+ff;
+```
+
+</Playground>
 
 ## DisclosureProvider
 
