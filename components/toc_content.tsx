@@ -69,8 +69,6 @@ function useIntersection(
   deps?: DependencyList,
 ): void {
   useEffect(() => {
-    console.log(2);
-
     const _target = target();
     if (!_target) return;
     const _intersectionObserver = intersectionObserver();
