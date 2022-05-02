@@ -146,49 +146,71 @@ export default function Index(
           </Transition>
         </Portal>
 
-        <Header />
+        <Header className="h-[50px] sticky top-0 z-1 flex justify-center px-5 sm:px-12 lg:px-4 xl:px-0 backdrop-blur-md border-b bg-white/50 dark:bg-dark-900 border-white/30 dark:border-dark-200" />
 
-        <div className="container mx-auto grid justify-center grid-cols-1 md:grid-cols-[260px_minmax(0,65ch)] xl:grid-cols-[300px_minmax(auto,65ch)_300px]">
-          <main className="order-2">
-            <article
-              ref={articleRef}
-              className="prose px-5 lg:px-8 py-4"
-            >
-              <Disclosure>
-                <WithDisclosureTrigger>
-                  {(attrs, { isOpen }) => (
-                    <button
-                      {...attrs}
-                      className="flex w-full justify-center items-center xl:hidden space-x-2 rounded p-1 dark:border-dark-200 mb-4"
+        <div className="max-w-7xl px-5 sm:px-12 lg:px-4 xl:px-0 mx-auto grid gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] justify-center grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.5fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)]">
+          <div className="order-2 md:py-8">
+            <nav>
+              <ol className="space-x-2 flex items-center">
+                {[{ name: "Home", path: "/react" }, {
+                  name: pageProps?.meta.title,
+                }].map(({ name, path }, i) => {
+                  return (
+                    <li
+                      className="space-x-1 inline-flex items-center"
+                      key={name}
                     >
-                      <span className="uppercase">
-                        Table Of Contents
-                      </span>
+                      {!!i && <span className="i-mdi-chevron-right" />}
+                      <a href={path}>{name}</a>
+                    </li>
+                  );
+                })}
+              </ol>
+            </nav>
 
-                      <span
-                        className={clsx(
-                          "i-mdi-chevron-down w-5 h-5 transition transform duration-300",
-                          { "-rotate-180": !isOpen },
-                        )}
-                      />
-                    </button>
-                  )}
-                </WithDisclosureTrigger>
+            <Disclosure>
+              <WithDisclosureTrigger>
+                {(attrs, { isOpen }) => (
+                  <button
+                    {...attrs}
+                    className="flex w-full justify-center items-center xl:hidden space-x-2 rounded p-1 dark:border-dark-200 my-4"
+                  >
+                    <span className="uppercase">
+                      Table Of Contents
+                    </span>
 
-                <WithDisclosureTarget>
-                  {(props, { isOpen }) => (
-                    <Transition {...fade} isShow={isOpen}>
-                      <nav {...props} className="xl:hidden">
-                        <TOCContent children={pageProps?.tableOfContents} />
-                      </nav>
-                    </Transition>
-                  )}
-                </WithDisclosureTarget>
-              </Disclosure>
-              <Page components={MDXComponents} />
-            </article>
-          </main>
-          <aside className="hidden sticky top-[50px] md:block order-1 max-h-screen h-full p-4">
+                    <span
+                      className={clsx(
+                        "i-mdi-chevron-down w-5 h-5 transition transform duration-300",
+                        { "-rotate-180": !isOpen },
+                      )}
+                    />
+                  </button>
+                )}
+              </WithDisclosureTrigger>
+
+              <WithDisclosureTarget>
+                {(props, { isOpen }) => (
+                  <Transition {...fade} isShow={isOpen}>
+                    <nav {...props} className="lg:hidden my-4">
+                      <TOCContent children={pageProps?.tableOfContents} />
+                    </nav>
+                  </Transition>
+                )}
+              </WithDisclosureTarget>
+            </Disclosure>
+
+            <main className="mt-8">
+              <article
+                ref={articleRef}
+                className="prose"
+              >
+                <Page components={MDXComponents} />
+              </article>
+            </main>
+          </div>
+
+          <aside className="hidden py-8 sticky top-[50px] md:block order-1 max-h-screen h-full">
             <nav>
               <ul>
                 {navLinks.map(({ name, path }) => {
@@ -204,7 +226,7 @@ export default function Index(
             </nav>
           </aside>
 
-          <aside className="xl:sticky xl:top-[50px] hidden xl:block order-1 md:order-3 max-h-screen h-full p-4">
+          <aside className="lg:sticky py-8 lg:top-[50px] hidden lg:block order-1 md:order-3 max-h-screen h-full">
             <h3 className="hidden md:block">
               On this page
             </h3>

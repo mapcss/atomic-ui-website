@@ -2,17 +2,25 @@ import { forwardRef, useContext } from "react";
 import { Tooltip, TooltipProvider, Transition } from "@atomic_ui_react/mod.ts";
 import ToggleDark from "~/components/toggle_dark.tsx";
 import { fade } from "~/utils/transition.ts";
+import { clsx } from "~/deps.ts";
 import NavigationDrawerContext from "~/contexts/react/navigation_drawer.ts";
 
 const tooltipClassName =
   "absolute text-sm bg-gray-50 dark:bg-dark-800 px-1 border border-gray-200 dark:border-dark-200 left-1/2 transform -translate-x-1/2 whitespace-nowrap rounded-md -bottom-6 mx-auto";
 
-export default function Header(): JSX.Element {
+export default function Header(
+  { className, ...rest }: JSX.IntrinsicElements["header"],
+): JSX.Element {
   return (
-    <header className="px-5 z-1 py-2 sticky top-0 backdrop-blur-md border-b bg-white/50 dark:bg-dark-900 border-white/30 dark:border-dark-200">
-      <div className="container mx-auto 2xl:px-34 flex justify-between items-center">
+    <header
+      {...rest}
+      className={clsx(
+        className,
+      )}
+    >
+      <div className="max-w-7xl w-full flex justify-between items-center">
         <a href="/">
-          <h1 className="xl:px-4 text-xl leading-relaxed">
+          <h1 className="text-xl leading-relaxed">
             Atomic UI
           </h1>
         </a>
