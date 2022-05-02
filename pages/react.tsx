@@ -72,7 +72,7 @@ export default function Index(
   useOutside(
     {
       target: ref,
-      callback: () => {},
+      callback: off,
       event: "mousedown",
     },
     undefined,
@@ -147,6 +147,37 @@ export default function Index(
 
         <main className="container relative z-auto mx-auto grid justify-center grid-cols-1 md:grid-cols-[260px_minmax(0,65ch)] xl:grid-cols-[300px_minmax(auto,65ch)_300px]">
           <article ref={articleRef} className="prose px-5 order-2 lg:px-8 py-4">
+            <Disclosure>
+              <WithDisclosureTrigger>
+                {(attrs, { isOpen }) => (
+                  <button
+                    {...attrs}
+                    className="flex w-full justify-center items-center xl:hidden space-x-2 rounded p-1 dark:border-dark-200 mb-4"
+                  >
+                    <span className="uppercase">
+                      Table Of Contents
+                    </span>
+
+                    <span
+                      className={clsx(
+                        "i-mdi-chevron-down w-5 h-5 transition transform duration-300",
+                        { "-rotate-180": !isOpen },
+                      )}
+                    />
+                  </button>
+                )}
+              </WithDisclosureTrigger>
+
+              <WithDisclosureTarget>
+                {(props, { isOpen }) => (
+                  <Transition {...fade} isShow={isOpen}>
+                    <nav {...props} className="xl:hidden">
+                      <TOCContent children={pageProps?.tableOfContents} />
+                    </nav>
+                  </Transition>
+                )}
+              </WithDisclosureTarget>
+            </Disclosure>
             <Page components={MDXComponents} />
           </article>
 
@@ -166,41 +197,14 @@ export default function Index(
             </nav>
           </aside>
 
-          <aside className="xl:sticky xl:top-[50px] md:hidden xl:block order-1 md:order-3 max-h-screen h-full p-4">
+          <aside className="xl:sticky xl:top-[50px] hidden xl:block order-1 md:order-3 max-h-screen h-full p-4">
             <h3 className="hidden md:block">
               On this page
             </h3>
-            <Disclosure isDefaultOpen>
-              <WithDisclosureTrigger>
-                {(attrs, { isOpen }) => (
-                  <button
-                    {...attrs}
-                    className="flex w-full justify-center items-center space-x-2 md:hidden rounded p-1 dark:border-dark-200 mb-2"
-                  >
-                    <span className="uppercase">
-                      Table Of Contents
-                    </span>
 
-                    <span
-                      className={clsx(
-                        "i-mdi-chevron-down w-5 h-5 transition transform duration-300",
-                        { "-rotate-180": !isOpen },
-                      )}
-                    />
-                  </button>
-                )}
-              </WithDisclosureTrigger>
-
-              <WithDisclosureTarget>
-                {(props, { isOpen }) => (
-                  <Transition {...fade} isShow={isOpen}>
-                    <nav {...props}>
-                      <TOCContent children={pageProps?.tableOfContents} />
-                    </nav>
-                  </Transition>
-                )}
-              </WithDisclosureTarget>
-            </Disclosure>
+            <nav>
+              <TOCContent children={pageProps?.tableOfContents} />
+            </nav>
           </aside>
         </main>
       </ArticleRefContext.Provider>
