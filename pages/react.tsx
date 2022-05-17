@@ -20,7 +20,6 @@ import Toolbar from "~/components/toolbar.ts";
 import { fade } from "~/utils/transition.ts";
 import { clsx } from "~/deps.ts";
 import useIntersection from "~/hooks/use_intersection.ts";
-import WithHeader from "~/layouts/with_header.tsx";
 
 const Head = memo(_Head);
 const TOCContent = memo(_TOCContent);
@@ -70,22 +69,21 @@ export default function Index(
   if (!Page) {
     return (
       <div className="flex flex-col h-screen">
-        <WithHeader>
-          <main className="max-w-7xl w-full grid place-content-center flex-1 mx-auto h-full">
-            <nav>
-              <ul>
-                <li>
-                  <a
-                    className="border p-1 rounded-md inline-block"
-                    href="transition"
-                  >
-                    <h2 className="text-xl">Transition</h2>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </main>
-        </WithHeader>
+        <Header />
+        <main className="max-w-7xl w-full grid place-content-center flex-1 mx-auto h-full">
+          <nav>
+            <ul>
+              <li>
+                <a
+                  className="border p-1 rounded-md inline-block"
+                  href="transition"
+                >
+                  <h2 className="text-xl">Transition</h2>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </main>
       </div>
     );
   }
