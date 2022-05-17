@@ -3,7 +3,7 @@ import {
   Switch,
   Tooltip,
   TooltipProvider,
-  Transition,
+  WithTransition,
   useIsomorphicLayoutEffect,
 } from "@atomic_ui_react/mod.ts";
 import { fade } from "~/utils/transition.ts";
@@ -62,11 +62,11 @@ export default function ToggleDark(): JSX.Element {
               <span className={clsx(icon, "transition-all duration-500")} />
             </span>
           </Switch>
-          <Transition {...fade} isShow={isShow}>
+          <WithTransition {...fade} isShow={isShow}>
             <Tooltip className="absolute text-sm bg-gray-50 dark:bg-dark-800 px-1 border border-gray-200 dark:border-dark-200 left-1/2 transform -translate-x-1/2 whitespace-nowrap rounded-md -bottom-6 mx-auto">
               Dark mode
             </Tooltip>
-          </Transition>
+          </WithTransition>
         </>
       )}
     </TooltipProvider>

@@ -3,7 +3,7 @@ import { clsx } from "~/deps.ts";
 import TOC from "~/components/toc.tsx";
 import HashLink from "~/components/hash_link.tsx";
 import ArticleRefContext from "~/contexts/react/article_ref.ts";
-import { filterTruthy } from "@atomic_ui_react/deps.ts";
+import { filterTruthy } from "@atomic_ui_react/mod.ts";
 import useIntersection from "~/hooks/use_intersection.ts";
 import type {
   TableOfContents,

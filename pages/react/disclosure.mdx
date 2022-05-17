@@ -2,10 +2,9 @@
 
 import {
   DisclosureProvider,
-  Transition,
-  Disclosure,
-  WithDisclosureTrigger,
-  WithDisclosureTarget,
+  WithTransition,
+  WithDisclosureControl,
+  WithDisclosureContent,
 } from "@atomic_ui_react/mod.ts";
 import Playground from "~/components/playground.tsx";
 
@@ -28,16 +27,16 @@ export const BasicExample = () => {
     <div className="bg-white p-2 rounded-xl space-y-2">
       {contents.map(({ title, content }) => {
         return (
-          <Disclosure key={title}>
-            <WithDisclosureTrigger>
+          <DisclosureProvider key={title}>
+            <WithDisclosureControl>
               <button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-purple-900 bg-purple-100 rounded-lg hover:bg-purple-200 focus:outline-none focus:ring focus:ring-purple-500 focus:ring-opacity-75">
                 {title}
               </button>
-            </WithDisclosureTrigger>
-            <WithDisclosureTarget>
+            </WithDisclosureControl>
+            <WithDisclosureContent>
               <p className="px-4 pb-2 text-sm text-gray-500">{content}</p>
-            </WithDisclosureTarget>
-          </Disclosure>
+            </WithDisclosureContent>
+          </DisclosureProvider>
         );
       })}
     </div>
@@ -150,11 +149,11 @@ const contents = [
 
 </Playground>
 
-### with Transition
+### with WithTransition
 
-Transition can be used to achieve beautiful opening and closing movements.
+WithTransition can be used to achieve beautiful opening and closing movements.
 
-export const DisclosureProviderWithTransitionExample = () => {
+export const DisclosureProviderWithWithTransitionExample = () => {
   return (
     <div className="bg-white p-2 rounded-xl space-y-2">
       {contents.map(({ title, content }) => (
@@ -169,7 +168,7 @@ export const DisclosureProviderWithTransitionExample = () => {
               >
                 {title}
               </button>
-              <Transition
+              <WithTransition
                 isShow={isOpen}
                 enterFrom="opacity-0"
                 enter="transition duration-300"
@@ -179,7 +178,7 @@ export const DisclosureProviderWithTransitionExample = () => {
                 <p id={id} className={`px-4 pb-2 text-sm text-gray-500`}>
                   {content}
                 </p>
-              </Transition>
+              </WithTransition>
             </>
           )}
         </DisclosureProvider>
@@ -188,10 +187,10 @@ export const DisclosureProviderWithTransitionExample = () => {
   );
 };
 
-<Playground preview={<DisclosureProviderWithTransitionExample />}>
+<Playground preview={<DisclosureProviderWithWithTransitionExample />}>
 
 ```tsx
-import { DisclosureProvider, Transition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
+import { DisclosureProvider, WithTransition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
 
 export default = () => {
   return (
@@ -208,7 +207,7 @@ export default = () => {
               >
                 {title}
               </button>
-              <Transition
+              <WithTransition
                 isShow={isOpen}
                 enterFrom="opacity-0"
                 enter="transition duration-300"
@@ -218,7 +217,7 @@ export default = () => {
                 <p id={id} className={`px-4 pb-2 text-sm text-gray-500`}>
                   {content}
                 </p>
-              </Transition>
+              </WithTransition>
             </>
           )}
         </DisclosureProvider>

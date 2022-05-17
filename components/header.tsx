@@ -1,5 +1,9 @@
 import { forwardRef, useContext } from "react";
-import { Tooltip, TooltipProvider, Transition } from "@atomic_ui_react/mod.ts";
+import {
+  Tooltip,
+  TooltipProvider,
+  WithTransition,
+} from "@atomic_ui_react/mod.ts";
 import ToggleDark from "~/components/toggle_dark.tsx";
 import { fade } from "~/utils/transition.ts";
 import { clsx } from "~/deps.ts";
@@ -8,8 +12,9 @@ import NavigationDrawerContext from "~/contexts/react/navigation_drawer.ts";
 const tooltipClassName =
   "absolute text-sm bg-gray-50 dark:bg-dark-800 px-1 border border-gray-200 dark:border-dark-200 left-1/2 transform -translate-x-1/2 whitespace-nowrap rounded-md -bottom-6 mx-auto";
 
+export type Props = JSX.IntrinsicElements["header"];
 export default function Header(
-  { className, ...rest }: JSX.IntrinsicElements["header"],
+  { className, ...rest }: Props,
 ): JSX.Element {
   return (
     <header
@@ -34,14 +39,14 @@ export default function Header(
                   ref={ref}
                   className="md:hidden rounded inline-flex items-center backdrop-blur p-1 border-white/30 dark:border-dark-200"
                 />
-                <Transition
+                <WithTransition
                   {...fade}
                   isShow={isShow}
                 >
                   <Tooltip className={tooltipClassName}>
                     Menu
                   </Tooltip>
-                </Transition>
+                </WithTransition>
               </>
             )}
           </TooltipProvider>
@@ -54,9 +59,9 @@ export default function Header(
                   target="_blank"
                   className="hover:opacity-50 transition duration-300 i-mdi-github w-6 h-6"
                 />
-                <Transition {...fade} isShow={isShow}>
+                <WithTransition {...fade} isShow={isShow}>
                   <Tooltip className={tooltipClassName}>GitHub</Tooltip>
-                </Transition>
+                </WithTransition>
               </>
             )}
           </TooltipProvider>

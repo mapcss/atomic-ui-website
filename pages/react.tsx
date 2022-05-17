@@ -3,12 +3,13 @@ import { dynamic } from "aleph/react";
 import { MDXContent } from "https://esm.sh/@types/mdx/types.d.ts";
 import MDXComponents from "~/components/mdx_components.tsx";
 import {
-  Disclosure,
-  Transition,
+  DisclosureProvider,
+  filterTruthy,
   useBoolean,
   useOutside,
-  WithDisclosureTarget,
-  WithDisclosureTrigger,
+  WithDisclosureContent,
+  WithDisclosureControl,
+  WithTransition,
 } from "@atomic_ui_react/mod.ts";
 import _Header from "~/components/header.tsx";
 import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
@@ -19,11 +20,11 @@ import Toolbar from "~/components/toolbar.ts";
 import { fade } from "~/utils/transition.ts";
 import { clsx } from "~/deps.ts";
 import useIntersection from "~/hooks/use_intersection.ts";
-import { filterTruthy } from "@atomic_ui_react/deps.ts";
+import WithHeader from "~/layouts/with_header.tsx";
 
 const Head = memo(_Head);
-const Header = memo(_Header);
 const TOCContent = memo(_TOCContent);
+const Header = memo(_Header);
 
 const Portal = dynamic(() => import("~/components/portal.tsx"));
 const HashLink = dynamic(() => import("~/components/hash_link.tsx"));
@@ -66,8 +67,29 @@ export default function Index(
     };
   },
 ): JSX.Element {
+  if (!Page) {
+    return (
+      <div className="flex flex-col h-screen">
+        <WithHeader>
+          <main className="max-w-7xl w-full grid place-content-center flex-1 mx-auto h-full">
+            <nav>
+              <ul>
+                <li>
+                  <a
+                    className="border p-1 rounded-md inline-block"
+                    href="transition"
+                  >
+                    <h2 className="text-xl">Transition</h2>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </main>
+        </WithHeader>
+      </div>
+    );
+  }
   const title = pageProps?.tableOfContents?.items?.[0].title;
-  if (!Page) return <></>;
   if (!title) {
     throw Error("title is not exist");
   }
@@ -118,7 +140,7 @@ export default function Index(
       <ArticleRefContext.Provider value={articleRef}>
         <Head />
         <Portal>
-          <Transition
+          <WithTransition
             enter="transition duration-300"
             enterFrom="opacity-0 backdrop-blur-none"
             enterTo="backdrop-blur"
@@ -138,7 +160,7 @@ export default function Index(
             }`}
                 </style>
               </head>
-              <Transition
+              <WithTransition
                 enter="transform transition duration-300"
                 enterFrom="-translate-x-full"
                 leave="transform transition duration-300"
@@ -172,13 +194,16 @@ export default function Index(
                     </ul>
                   </nav>
                 </div>
-              </Transition>
+              </WithTransition>
             </div>
-          </Transition>
+          </WithTransition>
         </Portal>
 
-        <Header className="h-[50px] sticky top-0 z-2 flex justify-center px-5 sm:px-12 lg:px-4 xl:px-0 border-b bg-white dark:bg-dark-900 border-white/30 dark:border-dark-200" />
-
+        <Header
+          className={clsx(
+            "h-[50px] sticky top-0 z-2 flex justify-center px-5 sm:px-12 lg:px-4 xl:px-0 border-b bg-white dark:bg-dark-900 border-white/30 dark:border-dark-200",
+          )}
+        />
         <div className="max-w-7xl px-5 sm:px-12 lg:px-4 xl:px-0 mx-auto grid gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] justify-center grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.5fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)]">
           <div className="order-2 md:py-8">
             <aside className="sticky z-1 whitespace-nowrap overflow-x-scroll -mx-5 sm:mx-0 px-5 sm:px-0 top-[50px] border-2 border-white dark:border-dark-900 bg-white dark:bg-dark-900">
@@ -198,20 +223,20 @@ export default function Index(
                     );
                   })}
 
-                  <Transition isShow={!!activeAttr} {...fade}>
+                  <WithTransition isShow={!!activeAttr} {...fade}>
                     <li className="space-x-1 inline-flex items-center text-amber-500">
                       <span className="i-mdi-music-accidental-sharp" />
                       <HashLink href={activeAttr?.id}>
                         {activeAttr?.textContent}
                       </HashLink>
                     </li>
-                  </Transition>
+                  </WithTransition>
                 </ol>
               </nav>
             </aside>
 
-            <Disclosure>
-              <WithDisclosureTrigger>
+            <DisclosureProvider>
+              <WithDisclosureControl>
                 {(attrs, { isOpen }) => (
                   <button
                     {...attrs}
@@ -229,18 +254,18 @@ export default function Index(
                     />
                   </button>
                 )}
-              </WithDisclosureTrigger>
+              </WithDisclosureControl>
 
-              <WithDisclosureTarget>
+              <WithDisclosureContent>
                 {(props, { isOpen }) => (
-                  <Transition {...fade} isShow={isOpen}>
+                  <WithTransition {...fade} isShow={isOpen}>
                     <nav {...props} className="lg:hidden my-4">
                       <TOCContent children={pageProps?.tableOfContents} />
                     </nav>
-                  </Transition>
+                  </WithTransition>
                 )}
-              </WithDisclosureTarget>
-            </Disclosure>
+              </WithDisclosureContent>
+            </DisclosureProvider>
 
             <main className="mt-8">
               <article

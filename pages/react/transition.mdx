@@ -3,7 +3,7 @@
 The Transition component lets you add enter/leave transitions to conditionally rendered elements, using CSS classes to control the actual transition styles in the different stages of the transition.
 
 import { useState, cloneElement } from "react";
-import { Transition } from "@atomic_ui_react/transition/mod.ts";
+import { WithTransition } from "@atomic_ui_react/transition/mod.ts";
 import { useBoolean } from "@atomic_ui_react/hooks/mod.ts";
 import Playground from "~/components/playground.tsx";
 
@@ -26,9 +26,9 @@ export const BasicExample = () => {
       <button onClick={toggle} className={buttonClassName}>
         Toggle
       </button>
-      <Transition immediate isShow={isShow} {...transitionProps}>
+      <WithTransition immediate isShow={isShow} {...transitionProps}>
         <div className={boxClassName} />
-      </Transition>
+      </WithTransition>
     </>
   );
 };
@@ -44,12 +44,12 @@ export default = () => {
   return (
     <>
       <button onClick={toggle}>Toggle</button>
-      <Transition
+      <WithTransition
         isShow={isShow}
         {...transitionProps}
       >
        <div className="w-32 h-32 bg-white rounded-md shadow-lg" />
-      </Transition>{" "}
+      </WithTransition>{" "}
     </>
   );
 };
@@ -98,7 +98,7 @@ export const RenderExample = () => {
       <button className={buttonClassName} onClick={toggle}>
         Toggle
       </button>
-      <Transition
+      <WithTransition
         {...transitionProps}
         leaveTo="opacity-20 border-6 border-dashed opacity-20 scale-95 transform"
         leaved="opacity-20 border-6 border-dashed opacity-20 scale-95 transform"
@@ -108,7 +108,7 @@ export const RenderExample = () => {
         }}
       >
         <div className={boxClassName} />
-      </Transition>
+      </WithTransition>
     </>
   );
 };
@@ -126,7 +126,7 @@ export default () => {
   return (
     <>
       <button onClick={toggle}>Toggle</button>
-      <Transition
+      <WithTransition
         enter="transform transition duration-400"
         enterFrom="opacity-0 rotate-120 scale-50"
         enterTo="opacity-100 rotate-0 scale-100"
@@ -137,7 +137,7 @@ export default () => {
         isShow={isShow}
       >
         <div />
-      </Transition>
+      </WithTransition>
     </>
   );
 };
@@ -149,7 +149,7 @@ Instead of removing it from the DOM, change the `visibility` of the CSS Property
 
 ## API
 
-### Transition
+### WithTransition
 
 #### Props
 

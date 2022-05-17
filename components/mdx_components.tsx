@@ -13,7 +13,7 @@ import HashLink from "~/components/hash_link.tsx";
 import { isReactElement } from "~/util.ts";
 import { useTimeout } from "@atomic_ui_react/mod.ts";
 import { fade } from "~/utils/transition.ts";
-import { Tooltip, TooltipProvider, Transition } from "@atomic_ui_react/mod.ts";
+import { Tooltip, TooltipProvider, WithTransition } from "@atomic_ui_react/mod.ts";
 
 const Code: MDXComponents["code"] = (props) => {
   if (isString(props.children)) {
@@ -75,11 +75,11 @@ const Code: MDXComponents["code"] = (props) => {
                 <span className={className} />
               </button>
 
-              <Transition isShow={isShow} {...fade}>
+              <WithTransition isShow={isShow} {...fade}>
                 <Tooltip className="absolute text-sm px-1 border backdrop-blur bg-white/20 text-white border-white/20 top-1/2 mr-8.5 right-0 transform -translate-y-1/2 rounded-md mx-auto">
                   {copyLabel}
                 </Tooltip>
-              </Transition>
+              </WithTransition>
             </>
           )}
         </TooltipProvider>
