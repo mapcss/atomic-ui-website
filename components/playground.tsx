@@ -9,13 +9,8 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  TabProvider,
-  WithTab,
-  WithTabList,
-  WithTabPanel,
-} from "@atomic_ui_react/mod.ts";
-import { isFunction, isNumber, isObject, isString } from "~/deps.ts";
+import { Tab, TabList, TabPanel, TabProvider } from "@atomic_ui_react/mod.ts";
+import { clsx, isFunction, isNumber, isObject, isString } from "~/deps.ts";
 import { hasChildren, isReactElement } from "~/util.ts";
 
 type Props = {
@@ -55,32 +50,31 @@ export default function Playground(
     <>
       <div ref={wrapperRef} className="relative my-4">
         <TabProvider>
-          <WithTabList>
-            <div className="absolute text-white p-2 space-x-1 right-0">
-              <WithTab>
-                <button className="transition duration-300 px-2 py-0.5 focus:outline-none focus:ring text-sm rounded-l-md rounded-r-sm bg-white/20 backdrop-blur border border-white/20">
-                  Preview
-                </button>
-              </WithTab>
-              <WithTab>
-                <button className="transition duration-300 px-2 py-0.5 focus:outline-none focus:ring text-sm rounded-r-md rounded-l-sm bg-white/20 backdrop-blur border border-white/20">
-                  Code
-                </button>
-              </WithTab>
-            </div>
-          </WithTabList>
+          <TabList className="absolute text-white p-2 space-x-1 right-0">
+            <Tab className="transition duration-300 px-2 py-0.5 focus:outline-none focus:ring text-sm rounded-l-md rounded-r-sm bg-white/20 backdrop-blur border border-white/20">
+              Preview
+            </Tab>
+            <Tab className="transition duration-300 px-2 py-0.5 focus:outline-none focus:ring text-sm rounded-r-md rounded-l-sm bg-white/20 backdrop-blur border border-white/20">
+              Code
+            </Tab>
+          </TabList>
 
-          <WithTabPanel>
-            <div className="grid place-content-center -mx-5 sm:mx-0 p-20 from-red-500 bg-gradient-to-bl via-red-400 to-red-300 sm:rounded-xl shadow border border-red-600">
-              {preview}
-            </div>
-          </WithTabPanel>
+          <TabPanel
+            className={({ isSelect }) => {
+              return clsx(
+                "grid place-content-center -mx-5 sm:mx-0 p-20 from-red-500 bg-gradient-to-bl via-red-400 to-red-300 sm:rounded-xl shadow border border-red-600",
+                {
+                  "hidden": !isSelect,
+                },
+              );
+            }}
+          >
+            {preview}
+          </TabPanel>
 
-          <WithTabPanel>
-            <div className="-mx-5 sm:mx-0 hljs" style={style}>
-              {modifiedChildren}
-            </div>
-          </WithTabPanel>
+          <TabPanel className="-mx-5 sm:mx-0 hljs" style={style}>
+            {modifiedChildren}
+          </TabPanel>
         </TabProvider>
       </div>
     </>
