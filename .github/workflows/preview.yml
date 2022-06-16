@@ -9,7 +9,7 @@ jobs:
 
       - uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.x
+          deno-version: 1.21.0
 
       - name: lint
         run: |
@@ -23,7 +23,7 @@ jobs:
 
       - uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.x
+          deno-version: 1.21.0
 
       - name: test
         run: deno test --doc
@@ -35,7 +35,7 @@ jobs:
 
       - uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.x
+          deno-version: 1.21.0
 
       - name: restore cache
         uses: actions/cache@v2
