@@ -1,11 +1,10 @@
 import { forwardRef, useContext } from "react";
 import {
   Tooltip,
-  TooltipProvider,
-  WithTransition,
+  TooltipContainer,
+  TooltipTrigger,
 } from "@atomic_ui_react/mod.ts";
 import ToggleDark from "~/components/toggle_dark.tsx";
-import { fade } from "~/utils/transition.ts";
 import { clsx } from "~/deps.ts";
 import NavigationDrawerContext from "~/contexts/react/navigation_drawer.ts";
 
@@ -32,39 +31,22 @@ export default function Header(
 
         <div role="toolbar" className="space-x-4 flex items-center">
           <ToggleDark />
-          <TooltipProvider>
-            {({ ref, isShow }) => (
-              <>
-                <NavigationButton
-                  ref={ref}
-                  className="md:hidden rounded inline-flex items-center backdrop-blur p-1 border-white/30 dark:border-dark-200"
-                />
-                <WithTransition
-                  {...fade}
-                  isShow={isShow}
-                >
-                  <Tooltip className={tooltipClassName}>
-                    Menu
-                  </Tooltip>
-                </WithTransition>
-              </>
-            )}
-          </TooltipProvider>
-          <TooltipProvider className="hidden md:block">
-            {({ ref, isShow }) => (
-              <>
-                <a
-                  ref={ref}
-                  href="https://github.com/mapcss/atomic-ui-react"
-                  target="_blank"
-                  className="hover:opacity-50 transition duration-300 i-mdi-github w-6 h-6"
-                />
-                <WithTransition {...fade} isShow={isShow}>
-                  <Tooltip className={tooltipClassName}>GitHub</Tooltip>
-                </WithTransition>
-              </>
-            )}
-          </TooltipProvider>
+          <TooltipContainer>
+            <TooltipTrigger className="md:hidden rounded inline-flex items-center backdrop-blur p-1 border-white/30 dark:border-dark-200" />
+
+            <Tooltip className={tooltipClassName}>
+              Menu
+            </Tooltip>
+          </TooltipContainer>
+          <TooltipContainer className="hidden md:block">
+            <TooltipTrigger
+              as="a"
+              href="https://github.com/mapcss/atomic-ui-react"
+              target="_blank"
+              className="hover:opacity-50 transition duration-300 i-mdi-github w-6 h-6"
+            />
+            <Tooltip className={tooltipClassName}>GitHub</Tooltip>
+          </TooltipContainer>
         </div>
       </div>
     </header>

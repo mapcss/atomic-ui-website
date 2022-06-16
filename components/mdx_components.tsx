@@ -12,11 +12,10 @@ import { clsx, isString } from "~/deps.ts";
 import HashLink from "~/components/hash_link.tsx";
 import { isReactElement } from "~/util.ts";
 import { useTimeout } from "@atomic_ui_react/mod.ts";
-import { fade } from "~/utils/transition.ts";
 import {
   Tooltip,
-  TooltipProvider,
-  WithTransition,
+  TooltipContainer,
+  TooltipTrigger,
 } from "@atomic_ui_react/mod.ts";
 
 const Code: MDXComponents["code"] = (props) => {
@@ -40,12 +39,14 @@ const Code: MDXComponents["code"] = (props) => {
   }, [isWaiting]);
 
   useTimeout(
-    () => {
-      if (!isWaiting) return;
-      setIsWaiting(false);
+    {
+      callback: () => {
+        if (!isWaiting) return;
+        setIsWaiting(false);
+      },
+      ms: 4000,
     },
-    { ms: 4000 },
-    [isWaiting],
+    [isWaiting, setIsWaiting],
   );
 
   const icon = useMemo<string>(
@@ -64,29 +65,21 @@ const Code: MDXComponents["code"] = (props) => {
   return (
     <>
       <code {...props} ref={ref} />
-      <div
-        role="toolbar"
-        className="absolute opacity-30 transition-opacity duration-500 group-hover:opacity-100 bottom-0 right-0 p-2"
-      >
-        <TooltipProvider>
-          {({ ref, isShow }) => (
-            <>
-              <button
-                ref={ref}
-                onClick={() => setIsWaiting(true)}
-                className="sm:mx-0 inline-flex p-1.5 border transition duration-300 focus:outline-none focus:ring backdrop-blur bg-white/20 text-white border-white/20 rounded-md"
-              >
-                <span className={className} />
-              </button>
 
-              <WithTransition isShow={isShow} {...fade}>
-                <Tooltip className="absolute text-sm px-1 border backdrop-blur bg-white/20 text-white border-white/20 top-1/2 mr-8.5 right-0 transform -translate-y-1/2 rounded-md mx-auto">
-                  {copyLabel}
-                </Tooltip>
-              </WithTransition>
-            </>
-          )}
-        </TooltipProvider>
+      <div className="absolute bottom-0 right-0 p-2">
+        <TooltipContainer as="span">
+          <TooltipTrigger
+            as="button"
+            onClick={() => setIsWaiting(true)}
+            className="sm:mx-0 inline-flex p-1.5 border transition duration-300 focus:outline-none focus:ring backdrop-blur bg-white/20 text-white border-white/20 rounded-md"
+          >
+            <span className={className} />
+          </TooltipTrigger>
+
+          <Tooltip className="text-sm px-1 border backdrop-blur bg-white/20 text-white border-white/20 top-1/2 mr-8.5 right-0 transform -translate-y-1/2 rounded-md mx-auto">
+            {copyLabel}
+          </Tooltip>
+        </TooltipContainer>
       </div>
     </>
   );
@@ -98,7 +91,7 @@ const hashLinkClassName =
 const MDXComponents: MDXComponents = {
   h1: ({ children, ...props }) => {
     return (
-      <h1 {...props} className="text-2xl relative group">
+      <h1 {...props} className="text-2xl capitalize relative group">
         <HashLink
           href={`#${props.id}`}
           className={hashLinkClassName}

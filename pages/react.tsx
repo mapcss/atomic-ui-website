@@ -9,7 +9,6 @@ import {
   useOutside,
   WithDisclosureContent,
   WithDisclosureControl,
-  WithTransition,
 } from "@atomic_ui_react/mod.ts";
 import _Header from "~/components/header.tsx";
 import type { TableOfContents } from "https://deno.land/x/aleph_plugin_mdx@v1.3.0-beta.1/mod.ts";
@@ -17,7 +16,6 @@ import _TOCContent from "~/components/toc_content.tsx";
 import NavigationDrawerContext from "~/contexts/react/navigation_drawer.ts";
 import ArticleRefContext from "~/contexts/react/article_ref.ts";
 import Toolbar from "~/components/toolbar.ts";
-import { fade } from "~/utils/transition.ts";
 import { clsx } from "~/deps.ts";
 import useIntersection from "~/hooks/use_intersection.ts";
 
@@ -32,16 +30,21 @@ type NavLink = {
   name: string;
   path: string;
 };
-const navLinks: NavLink[] = [{
-  name: "Transition",
-  path: "/react/transition",
-}, {
-  name: "Switch",
-  path: "/react/switch",
-}, {
-  name: "Disclosure",
-  path: "/react/disclosure",
-}];
+const navLinks: NavLink[] = [
+  { name: "Breadcrumb", path: "/react/breadcrumb" },
+  {
+    name: "Transition",
+    path: "/react/transition",
+  },
+  {
+    name: "Switch",
+    path: "/react/switch",
+  },
+  {
+    name: "Disclosure",
+    path: "/react/disclosure",
+  },
+];
 
 function _Head(): JSX.Element {
   return (
@@ -123,32 +126,12 @@ export default function Index(
     },
   }, [Page]);
 
-  useOutside(
-    {
-      target: ref,
-      callback: off,
-      event: "mousedown",
-    },
-    undefined,
-    [],
-  );
-
   return (
     <NavigationDrawerContext.Provider value={[isShow, { on, off, toggle }]}>
       <ArticleRefContext.Provider value={articleRef}>
         <Head />
         <Portal>
-          <WithTransition
-            enter="transition duration-300"
-            enterFrom="opacity-0 backdrop-blur-none"
-            enterTo="backdrop-blur"
-            entered="backdrop-blur"
-            leaveFrom="backdrop-blur"
-            leave="transition duration-300"
-            leaveTo="backdrop-blur-none"
-            leaved="backdrop-blur-none"
-            isShow={isShow}
-          >
+          {isShow && (
             <div className="fixed z-1 inset-0">
               <head>
                 <style>
@@ -158,43 +141,35 @@ export default function Index(
             }`}
                 </style>
               </head>
-              <WithTransition
-                enter="transform transition duration-300"
-                enterFrom="-translate-x-full"
-                leave="transform transition duration-300"
-                leaveTo="-translate-x-full"
-                isRoot={false}
-                immediate
+
+              <div
+                ref={ref}
+                className="w-2/3 min-w-[300px] max-w-xs h-full bg-gray-100 dark:bg-dark-900 border-r border-gray-200 dark:border-dark-200"
               >
-                <div
-                  ref={ref}
-                  className="w-2/3 min-w-[300px] max-w-xs h-full bg-gray-100 dark:bg-dark-900 border-r border-gray-200 dark:border-dark-200"
-                >
-                  <Toolbar className="border-b border-gray-200 dark:border-dark-200 flex justify-end px-2 py-1">
-                    <button
-                      onClick={off}
-                      className="border inline-flex items-center border border-gray-200 dark:border-dark-200 p-1 rounded"
-                    >
-                      <span className="w-6 h-6 i-mdi-close" />
-                    </button>
-                  </Toolbar>
-                  <nav className="p-2">
-                    <ul>
-                      {navLinks.map(({ name, path }) => {
-                        return (
-                          <li key={name}>
-                            <a href={path} className="block" onClick={off}>
-                              {name}
-                            </a>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </nav>
-                </div>
-              </WithTransition>
+                <Toolbar className="border-b border-gray-200 dark:border-dark-200 flex justify-end px-2 py-1">
+                  <button
+                    onClick={off}
+                    className="border inline-flex items-center border border-gray-200 dark:border-dark-200 p-1 rounded"
+                  >
+                    <span className="w-6 h-6 i-mdi-close" />
+                  </button>
+                </Toolbar>
+                <nav className="p-2">
+                  <ul>
+                    {navLinks.map(({ name, path }) => {
+                      return (
+                        <li key={name}>
+                          <a href={path} className="block" onClick={off}>
+                            {name}
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </nav>
+              </div>
             </div>
-          </WithTransition>
+          )}
         </Portal>
 
         <Header
@@ -221,14 +196,14 @@ export default function Index(
                     );
                   })}
 
-                  <WithTransition isShow={!!activeAttr} {...fade}>
+                  {!!activeAttr && (
                     <li className="space-x-1 inline-flex items-center text-amber-500">
                       <span className="i-mdi-music-accidental-sharp" />
                       <HashLink href={activeAttr?.id}>
                         {activeAttr?.textContent}
                       </HashLink>
                     </li>
-                  </WithTransition>
+                  )}
                 </ol>
               </nav>
             </aside>
@@ -256,11 +231,11 @@ export default function Index(
 
               <WithDisclosureContent>
                 {(props, { isOpen }) => (
-                  <WithTransition {...fade} isShow={isOpen}>
+                  isOpen && (
                     <nav {...props} className="lg:hidden my-4">
                       <TOCContent children={pageProps?.tableOfContents} />
                     </nav>
-                  </WithTransition>
+                  )
                 )}
               </WithDisclosureContent>
             </DisclosureProvider>
