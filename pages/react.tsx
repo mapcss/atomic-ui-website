@@ -67,7 +67,16 @@ const navLinks: NavLink[] = [
   },
 ];
 
-function _Head({ title }: { title: string }): JSX.Element {
+type HeadProps = {
+  title: string;
+  description: string;
+  publishedAt?: string;
+  modifiedAt?: string;
+};
+
+function _Head(
+  { title, description, publishedAt }: Readonly<HeadProps>,
+): JSX.Element {
   const { routePath } = useRouter();
   const path = useMemo<string>(() => new URL(routePath, BASE_URL).toString(), [
     routePath,
@@ -84,6 +93,15 @@ function _Head({ title }: { title: string }): JSX.Element {
   return (
     <head>
       <title>{t}</title>
+      <meta property="og:title" content={t} />
+      <meta name="description" content={description} />
+      <meta name="og:description" content={description} />
+      <meta name="og:type" content="article" />
+      <meta name="og:url" content={path} />
+      <meta name="article:author" content="TomokiMiyauci" />
+      {publishedAt &&
+        <meta name="article:published_time" content={publishedAt} />}
+
       <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/github-dark.min.css"
@@ -121,20 +139,33 @@ function Main(): JSX.Element {
   );
 }
 
-export default function Index(
-  { Page, pageProps }: {
-    Page?: MDXContent;
-    pageProps?: {
-      tableOfContents?: TableOfContents;
-    };
-  },
+type PageProps = {
+  meta?: {
+    description: string;
+    publishedAt: string;
+  };
+  tableOfContents?: TableOfContents;
+};
+
+export type Props = {
+  Page: MDXContent;
+  pageProps: PageProps;
+};
+
+export default function Page(
+  { Page, pageProps }: Readonly<Partial<Props>>,
 ): JSX.Element {
   if (!Page) {
     return <Main />;
   }
   const title = pageProps?.tableOfContents?.items?.[0].title;
+  const description = pageProps?.meta?.description;
+  const publishedAt = pageProps?.meta?.publishedAt;
   if (!title) {
     throw Error("title is not exist");
+  }
+  if (!description) {
+    throw Error("description is not exist");
   }
 
   const [isShow, { on, off, toggle }] = useBoolean();
@@ -171,7 +202,11 @@ export default function Index(
   return (
     <NavigationDrawerContext.Provider value={[isShow, { on, off, toggle }]}>
       <ArticleRefContext.Provider value={articleRef}>
-        <Head title={title} />
+        <Head
+          title={title}
+          description={description}
+          publishedAt={publishedAt}
+        />
 
         <Portal>
           {isShow && (
@@ -297,6 +332,7 @@ export default function Index(
 
           <aside className="hidden py-8 sticky top-[50px] md:block order-1 max-h-screen h-full">
             <nav>
+              <h1 className="font-bold">Component</h1>
               <ul>
                 {navLinks.map(({ name, path }) => {
                   return (
@@ -312,9 +348,9 @@ export default function Index(
           </aside>
 
           <aside className="lg:sticky py-8 lg:top-[50px] hidden lg:block order-1 md:order-3 max-h-screen h-full">
-            <h3 className="hidden md:block">
+            <h1 className="hidden md:block font-bold">
               On this page
-            </h3>
+            </h1>
 
             <nav>
               <TOCContent children={pageProps?.tableOfContents} />
