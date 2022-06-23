@@ -15,9 +15,9 @@ import _TOCContent from "~/components/toc_content.tsx";
 import NavigationDrawerContext from "~/contexts/react/navigation_drawer.ts";
 import ArticleRefContext from "~/contexts/react/article_ref.ts";
 import Toolbar from "~/components/toolbar.ts";
-import { clsx } from "~/deps.ts";
+import { clsx, SchemaOrg } from "~/deps.ts";
 import useIntersection from "~/hooks/use_intersection.ts";
-import { SchemaOrg } from "~/deps.ts";
+import { capitalize } from "~/util.ts";
 
 const BASE_URL = "https://atomic-ui.miyauchi.dev/";
 
@@ -66,7 +66,7 @@ const navLinks: NavLink[] = [
   },
 ];
 
-function _Head(): JSX.Element {
+function _Head({ title }: { title: string }): JSX.Element {
   const { routePath } = useRouter();
   const path = useMemo<string>(() => new URL(routePath, BASE_URL).toString(), [
     routePath,
@@ -78,9 +78,11 @@ function _Head(): JSX.Element {
       path,
     ],
   );
+  const t = useMemo<string>(() => `${capitalize(title)} | Atomic UI`, [title]);
 
   return (
     <head>
+      <title>{t}</title>
       <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/github-dark.min.css"
@@ -164,7 +166,7 @@ export default function Index(
   return (
     <NavigationDrawerContext.Provider value={[isShow, { on, off, toggle }]}>
       <ArticleRefContext.Provider value={articleRef}>
-        <Head />
+        <Head title={title} />
 
         <Portal>
           {isShow && (
