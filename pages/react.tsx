@@ -95,12 +95,12 @@ function _Head(
       <title>{t}</title>
       <meta property="og:title" content={t} />
       <meta name="description" content={description} />
-      <meta name="og:description" content={description} />
-      <meta name="og:type" content="article" />
-      <meta name="og:url" content={path} />
-      <meta name="article:author" content="TomokiMiyauci" />
+      <meta property="og:description" content={description} />
+      <meta property="og:type" content="article" />
+      <meta property="og:url" content={path} />
+      <meta property="article:author" content="TomokiMiyauci" />
       {publishedAt &&
-        <meta name="article:published_time" content={publishedAt} />}
+        <meta property="article:published_time" content={publishedAt} />}
 
       <link
         rel="stylesheet"
