@@ -3,6 +3,7 @@ import { dynamic, useRouter } from "aleph/react";
 import { MDXContent } from "https://esm.sh/@types/mdx/types.d.ts";
 import MDXComponents from "~/components/mdx_components.tsx";
 import {
+  Breadcrumb,
   DisclosureProvider,
   filterTruthy,
   useBoolean,
@@ -98,6 +99,28 @@ function _Head({ title }: { title: string }): JSX.Element {
   );
 }
 
+function Main(): JSX.Element {
+  return (
+    <div className="flex flex-col h-screen">
+      <Header />
+      <main className="max-w-7xl w-full grid place-content-center flex-1 mx-auto h-full">
+        <nav>
+          <ul>
+            <li>
+              <a
+                className="border p-1 rounded-md inline-block"
+                href="transition"
+              >
+                <h2 className="text-xl">Transition</h2>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </main>
+    </div>
+  );
+}
+
 export default function Index(
   { Page, pageProps }: {
     Page?: MDXContent;
@@ -107,25 +130,7 @@ export default function Index(
   },
 ): JSX.Element {
   if (!Page) {
-    return (
-      <div className="flex flex-col h-screen">
-        <Header />
-        <main className="max-w-7xl w-full grid place-content-center flex-1 mx-auto h-full">
-          <nav>
-            <ul>
-              <li>
-                <a
-                  className="border p-1 rounded-md inline-block"
-                  href="transition"
-                >
-                  <h2 className="text-xl">Transition</h2>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </main>
-      </div>
-    );
+    return <Main />;
   }
   const title = pageProps?.tableOfContents?.items?.[0].title;
   if (!title) {
@@ -218,32 +223,34 @@ export default function Index(
         <div className="max-w-7xl px-5 sm:px-12 lg:px-4 xl:px-0 mx-auto grid gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] justify-center grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.5fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)]">
           <div className="order-2 md:py-8">
             <aside className="sticky z-1 whitespace-nowrap overflow-x-scroll -mx-5 sm:mx-0 px-5 sm:px-0 top-[50px] border-2 border-white dark:border-dark-900 bg-white dark:bg-dark-900">
-              <nav>
-                <ol className="space-x-2 flex items-center">
-                  {[{ name: "Home", path: "/react" }, {
-                    name: title,
-                  }].map(({ name, path }, i) => {
-                    return (
-                      <li
-                        className="space-x-1 inline-flex items-center"
-                        key={name}
-                      >
-                        {!!i && <span className="i-mdi-chevron-right" />}
-                        <a href={path}>{name}</a>
-                      </li>
-                    );
-                  })}
+              <Breadcrumb
+                disabledAriaCurrent
+                separator={<span className="i-mdi-chevron-right" />}
+                components={{
+                  ol: (props) => (
+                    <ol {...props} className="space-x-2 flex items-center" />
+                  ),
+                  li: (props) => (
+                    <li
+                      {...props}
+                      className="space-x-1 inline-flex items-center"
+                    />
+                  ),
+                }}
+              >
+                <a href="/react">Home</a>
+                <a aria-current="page" className="capitalize">{title}</a>
 
-                  {!!activeAttr && (
-                    <li className="space-x-1 inline-flex items-center text-amber-500">
+                {activeAttr &&
+                  (
+                    <span className="inline-flex items-center text-amber-500">
                       <span className="i-mdi-music-accidental-sharp" />
                       <HashLink href={activeAttr?.id}>
                         {activeAttr?.textContent}
                       </HashLink>
-                    </li>
+                    </span>
                   )}
-                </ol>
-              </nav>
+              </Breadcrumb>
             </aside>
 
             <DisclosureProvider>
