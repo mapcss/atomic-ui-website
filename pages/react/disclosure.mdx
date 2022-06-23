@@ -1,0 +1,18 @@
+# disclosure
+
+The Disclosure is a button that visually controls a piece of content.
+
+## Features
+
+- No DOM
+
+  There is no actual DOM. It provides DOM Attributes by wrapping them around any
+  component.
+
+- SSR friendly
+
+  By default, when a disclosure is closed, it does not remove the disclosure
+  content from the DOM. This is important for SEO.
+
+  Instead, it provides display: none as a style. This behavior is **completely
+  controllable**.

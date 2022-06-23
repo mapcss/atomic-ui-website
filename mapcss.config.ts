@@ -63,11 +63,7 @@ export default <Config> {
       },
     }),
   ],
-  css: [preflightCSS, {
-    "*": {
-      scrollPaddingTop: "50px",
-    },
-  }],
+  css: [preflightCSS],
   postcssPlugin: [autoprefixer],
   cssMap: {
     max: {
@@ -76,6 +72,9 @@ export default <Config> {
           maxWidth: "90rem",
         },
       },
+    },
+    "-rotate-180": {
+      transform: "rotate(-180deg)",
     },
   },
 };

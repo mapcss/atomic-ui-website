@@ -8,7 +8,7 @@ export const MouseHandlerOnHash: MouseEventHandler<HTMLAnchorElement> = (e) => {
 
   target?.scrollIntoView({
     behavior: "smooth",
-    block: "start",
+    block: "center",
   });
 };
 

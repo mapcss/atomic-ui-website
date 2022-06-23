@@ -1,21 +1,11 @@
-# Switch
-
 import { useState } from "react";
 import { Switch } from "@atomic_ui_react/mod.ts";
-import Playground from "~/components/playground.tsx";
-import { BasicExample } from "~/posts/switch/examples.tsx";
 
-<Playground preview={<BasicExample />}>
-```tsx
-import { useState } from "react";
-import { Switch } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
-
-export default () => {
-  const [isChecked, setCheck] = useState(false);
+export const BasicExample = (): JSX.Element => {
+  const [isChecked, setIsChecked] = useState(false);
   return (
     <Switch
-      isChecked={isChecked}
-      onChange={setCheck}
+      isCheckedSet={[isChecked, setIsChecked]}
       className={`${isChecked ? "bg-dark-900" : "bg-dark-100"}
           relative inline-flex flex-shrink-0 h-[38px] w-[74px] border-2 border-transparent rounded-full cursor-pointer ease-in-out focus:outline-none transition duration-300 focus:ring-2 focus:ring-white focus:ring-opacity-75`}
     >
@@ -28,5 +18,3 @@ export default () => {
     </Switch>
   );
 };
-```
-</Playground>

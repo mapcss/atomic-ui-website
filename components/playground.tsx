@@ -10,7 +10,7 @@ import {
   useState,
 } from "react";
 import { Tab, TabList, TabPanel, TabProvider } from "@atomic_ui_react/mod.ts";
-import { isFunction, isNumber, isObject, isString } from "~/deps.ts";
+import { clsx, isFunction, isNumber, isObject, isString } from "~/deps.ts";
 import { hasChildren, isReactElement } from "~/util.ts";
 
 type Props = {
@@ -59,9 +59,19 @@ export default function Playground(
             </Tab>
           </TabList>
 
-          <TabPanel className="grid place-content-center -mx-5 sm:mx-0 p-20 from-red-500 bg-gradient-to-bl via-red-400 to-red-300 sm:rounded-xl shadow border border-red-600">
+          <TabPanel
+            className={({ isSelect }) => {
+              return clsx(
+                "grid place-content-center -mx-5 sm:mx-0 p-20 from-red-500 bg-gradient-to-bl via-red-400 to-red-300 sm:rounded-xl shadow border border-red-600",
+                {
+                  "hidden": !isSelect,
+                },
+              );
+            }}
+          >
             {preview}
           </TabPanel>
+
           <TabPanel className="-mx-5 sm:mx-0 hljs" style={style}>
             {modifiedChildren}
           </TabPanel>

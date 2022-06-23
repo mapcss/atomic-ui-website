@@ -10,6 +10,7 @@ import injectReact from "https://crux.land/6m9ZEy";
 import mapcss from "~/plugins/mapcss.ts";
 import json from "./import_map.json" assert { type: "json" };
 import remarkFrontmatter from "https://cdn.skypack.dev/remark-frontmatter";
+import remarkSectionize from "https://esm.sh/remark-sectionize";
 import { remarkMdxFrontmatter } from "https://esm.sh/remark-mdx-frontmatter";
 import rehypeSlug from "https://esm.sh/rehype-slug@5";
 import rehypeHighlight from "https://esm.sh/rehype-highlight@5";
@@ -28,6 +29,7 @@ export default <Config> {
         remarkTocProps,
         remarkGfm,
         remarkEmoji,
+        remarkSectionize,
       ],
       rehypePlugins: [rehypeSlug, rehypeHighlight],
       rewritePagePath: (path) => path.replaceAll("_", "-"),
