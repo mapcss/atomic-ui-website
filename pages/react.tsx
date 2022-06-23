@@ -1,12 +1,11 @@
-import { memo, useRef, useState } from "react";
-import { dynamic } from "aleph/react";
+import { memo, useMemo, useRef, useState } from "react";
+import { dynamic, useRouter } from "aleph/react";
 import { MDXContent } from "https://esm.sh/@types/mdx/types.d.ts";
 import MDXComponents from "~/components/mdx_components.tsx";
 import {
   DisclosureProvider,
   filterTruthy,
   useBoolean,
-  useOutside,
   WithDisclosureContent,
   WithDisclosureControl,
 } from "@atomic_ui_react/mod.ts";
@@ -18,10 +17,31 @@ import ArticleRefContext from "~/contexts/react/article_ref.ts";
 import Toolbar from "~/components/toolbar.ts";
 import { clsx } from "~/deps.ts";
 import useIntersection from "~/hooks/use_intersection.ts";
+import { SchemaOrg } from "~/deps.ts";
+
+const BASE_URL = "https://atomic-ui.miyauchi.dev/";
 
 const Head = memo(_Head);
 const TOCContent = memo(_TOCContent);
 const Header = memo(_Header);
+
+const schema = (name: string): SchemaOrg => ({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "name": "React",
+    "item": {
+      "@type": "Thing",
+      "@id": new URL("react", BASE_URL).toString(),
+    },
+  }, {
+    "@type": "ListItem",
+    "position": 2,
+    name,
+  }],
+});
 
 const Portal = dynamic(() => import("~/components/portal.tsx"));
 const HashLink = dynamic(() => import("~/components/hash_link.tsx"));
@@ -47,6 +67,18 @@ const navLinks: NavLink[] = [
 ];
 
 function _Head(): JSX.Element {
+  const { routePath } = useRouter();
+  const path = useMemo<string>(() => new URL(routePath, BASE_URL).toString(), [
+    routePath,
+  ]);
+  const schemaStr = useMemo<string>(
+    () => JSON.stringify(schema(path)),
+    [
+      schema,
+      path,
+    ],
+  );
+
   return (
     <head>
       <link
@@ -57,6 +89,9 @@ function _Head(): JSX.Element {
         rel="stylesheet"
         href="~/style/highlight.css"
       />
+      <script type="application/json+ld">
+        {schemaStr}
+      </script>
     </head>
   );
 }
@@ -130,6 +165,7 @@ export default function Index(
     <NavigationDrawerContext.Provider value={[isShow, { on, off, toggle }]}>
       <ArticleRefContext.Provider value={articleRef}>
         <Head />
+
         <Portal>
           {isShow && (
             <div className="fixed z-1 inset-0">
