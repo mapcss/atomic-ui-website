@@ -99,6 +99,11 @@ function _Head(
       <meta property="og:type" content="article" />
       <meta property="og:url" content={path} />
       <meta property="article:author" content="TomokiMiyauci" />
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:title" content={t} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:creator" content="@tomoki_miyauci" />
+      <meta name="twitter:site" content="@tomoki_miyauci" />
       {publishedAt &&
         <meta property="article:published_time" content={publishedAt} />}
 
@@ -110,7 +115,7 @@ function _Head(
         rel="stylesheet"
         href="~/style/highlight.css"
       />
-      <script type="application/json+ld">
+      <script type="application/ld+json">
         {schemaStr}
       </script>
     </head>
