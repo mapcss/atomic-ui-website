@@ -15,10 +15,10 @@ import {
   iconifyJSON,
   presetSVG,
 } from "https://deno.land/x/mapcss@1.0.0-beta.58/preset_svg/mod.ts";
-import mdi from "https://esm.sh/@iconify-json/mdi/icons.json" assert {
+import mdi from "https://esm.sh/@iconify-json/mdi@1.1.20/icons.json" assert {
   type: "json",
 };
-import charm from "https://esm.sh/@iconify-json/charm/icons.json" assert {
+import charm from "https://esm.sh/@iconify-json/charm@1.1.2/icons.json" assert {
   type: "json",
 };
 

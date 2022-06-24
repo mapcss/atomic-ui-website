@@ -3,6 +3,7 @@ import { dynamic, useRouter } from "aleph/react";
 import { MDXContent } from "https://esm.sh/@types/mdx/types.d.ts";
 import MDXComponents from "~/components/mdx_components.tsx";
 import {
+  Breadcrumb,
   DisclosureProvider,
   filterTruthy,
   useBoolean,
@@ -15,9 +16,9 @@ import _TOCContent from "~/components/toc_content.tsx";
 import NavigationDrawerContext from "~/contexts/react/navigation_drawer.ts";
 import ArticleRefContext from "~/contexts/react/article_ref.ts";
 import Toolbar from "~/components/toolbar.ts";
-import { clsx } from "~/deps.ts";
+import { clsx, SchemaOrg } from "~/deps.ts";
 import useIntersection from "~/hooks/use_intersection.ts";
-import { SchemaOrg } from "~/deps.ts";
+import { capitalize } from "~/util.ts";
 
 const BASE_URL = "https://atomic-ui.miyauchi.dev/";
 
@@ -66,7 +67,16 @@ const navLinks: NavLink[] = [
   },
 ];
 
-function _Head(): JSX.Element {
+type HeadProps = {
+  title: string;
+  description: string;
+  publishedAt?: string;
+  modifiedAt?: string;
+};
+
+function _Head(
+  { title, description, publishedAt }: Readonly<HeadProps>,
+): JSX.Element {
   const { routePath } = useRouter();
   const path = useMemo<string>(() => new URL(routePath, BASE_URL).toString(), [
     routePath,
@@ -78,9 +88,20 @@ function _Head(): JSX.Element {
       path,
     ],
   );
+  const t = useMemo<string>(() => `${capitalize(title)} | Atomic UI`, [title]);
 
   return (
     <head>
+      <title>{t}</title>
+      <meta property="og:title" content={t} />
+      <meta name="description" content={description} />
+      <meta property="og:description" content={description} />
+      <meta property="og:type" content="article" />
+      <meta property="og:url" content={path} />
+      <meta property="article:author" content="TomokiMiyauci" />
+      {publishedAt &&
+        <meta property="article:published_time" content={publishedAt} />}
+
       <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/github-dark.min.css"
@@ -96,38 +117,55 @@ function _Head(): JSX.Element {
   );
 }
 
-export default function Index(
-  { Page, pageProps }: {
-    Page?: MDXContent;
-    pageProps?: {
-      tableOfContents?: TableOfContents;
-    };
-  },
+function Main(): JSX.Element {
+  return (
+    <div className="flex flex-col h-screen">
+      <Header />
+      <main className="max-w-7xl w-full grid place-content-center flex-1 mx-auto h-full">
+        <nav>
+          <ul>
+            <li>
+              <a
+                className="border p-1 rounded-md inline-block"
+                href="transition"
+              >
+                <h2 className="text-xl">Transition</h2>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </main>
+    </div>
+  );
+}
+
+type PageProps = {
+  meta?: {
+    description: string;
+    publishedAt: string;
+  };
+  tableOfContents?: TableOfContents;
+};
+
+export type Props = {
+  Page: MDXContent;
+  pageProps: PageProps;
+};
+
+export default function Page(
+  { Page, pageProps }: Readonly<Partial<Props>>,
 ): JSX.Element {
   if (!Page) {
-    return (
-      <div className="flex flex-col h-screen">
-        <Header />
-        <main className="max-w-7xl w-full grid place-content-center flex-1 mx-auto h-full">
-          <nav>
-            <ul>
-              <li>
-                <a
-                  className="border p-1 rounded-md inline-block"
-                  href="transition"
-                >
-                  <h2 className="text-xl">Transition</h2>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </main>
-      </div>
-    );
+    return <Main />;
   }
   const title = pageProps?.tableOfContents?.items?.[0].title;
+  const description = pageProps?.meta?.description;
+  const publishedAt = pageProps?.meta?.publishedAt;
   if (!title) {
     throw Error("title is not exist");
+  }
+  if (!description) {
+    throw Error("description is not exist");
   }
 
   const [isShow, { on, off, toggle }] = useBoolean();
@@ -164,7 +202,11 @@ export default function Index(
   return (
     <NavigationDrawerContext.Provider value={[isShow, { on, off, toggle }]}>
       <ArticleRefContext.Provider value={articleRef}>
-        <Head />
+        <Head
+          title={title}
+          description={description}
+          publishedAt={publishedAt}
+        />
 
         <Portal>
           {isShow && (
@@ -216,32 +258,34 @@ export default function Index(
         <div className="max-w-7xl px-5 sm:px-12 lg:px-4 xl:px-0 mx-auto grid gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] justify-center grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.5fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)]">
           <div className="order-2 md:py-8">
             <aside className="sticky z-1 whitespace-nowrap overflow-x-scroll -mx-5 sm:mx-0 px-5 sm:px-0 top-[50px] border-2 border-white dark:border-dark-900 bg-white dark:bg-dark-900">
-              <nav>
-                <ol className="space-x-2 flex items-center">
-                  {[{ name: "Home", path: "/react" }, {
-                    name: title,
-                  }].map(({ name, path }, i) => {
-                    return (
-                      <li
-                        className="space-x-1 inline-flex items-center"
-                        key={name}
-                      >
-                        {!!i && <span className="i-mdi-chevron-right" />}
-                        <a href={path}>{name}</a>
-                      </li>
-                    );
-                  })}
+              <Breadcrumb
+                disabledAriaCurrent
+                separator={<span className="i-mdi-chevron-right" />}
+                components={{
+                  ol: (props) => (
+                    <ol {...props} className="space-x-2 flex items-center" />
+                  ),
+                  li: (props) => (
+                    <li
+                      {...props}
+                      className="space-x-1 inline-flex items-center"
+                    />
+                  ),
+                }}
+              >
+                <a href="/react">Home</a>
+                <a aria-current="page" className="capitalize">{title}</a>
 
-                  {!!activeAttr && (
-                    <li className="space-x-1 inline-flex items-center text-amber-500">
+                {activeAttr &&
+                  (
+                    <span className="inline-flex items-center text-amber-500">
                       <span className="i-mdi-music-accidental-sharp" />
                       <HashLink href={activeAttr?.id}>
                         {activeAttr?.textContent}
                       </HashLink>
-                    </li>
+                    </span>
                   )}
-                </ol>
-              </nav>
+              </Breadcrumb>
             </aside>
 
             <DisclosureProvider>
@@ -288,6 +332,7 @@ export default function Index(
 
           <aside className="hidden py-8 sticky top-[50px] md:block order-1 max-h-screen h-full">
             <nav>
+              <h1 className="font-bold">Component</h1>
               <ul>
                 {navLinks.map(({ name, path }) => {
                   return (
@@ -303,9 +348,9 @@ export default function Index(
           </aside>
 
           <aside className="lg:sticky py-8 lg:top-[50px] hidden lg:block order-1 md:order-3 max-h-screen h-full">
-            <h3 className="hidden md:block">
+            <h1 className="hidden md:block font-bold">
               On this page
-            </h3>
+            </h1>
 
             <nav>
               <TOCContent children={pageProps?.tableOfContents} />

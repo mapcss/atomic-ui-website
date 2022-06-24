@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "target": "esnext",
     "lib": [
       "dom",
       "dom.iterable",
@@ -14,7 +13,7 @@
   },
   "tasks": {
     "dev": "deno run -A https://deno.land/x/aleph@v0.3.0-beta.19/cli.ts dev",
-    "build": "deno run -A https://deno.land/x/aleph@v0.3.0-beta.19/cli.ts build",
+    "build": "DENO_DIR=./ deno run -A https://deno.land/x/aleph@v0.3.0-beta.19/cli.ts build -r",
     "start": "deno run -A https://deno.land/x/aleph@v0.3.0-beta.19/cli.ts start"
   },
   "lint": {

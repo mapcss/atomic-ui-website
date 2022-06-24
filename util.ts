@@ -10,3 +10,9 @@ export function hasChildren(
 ): reactElement is ReactElement<{ children: ReactNode }> {
   return "children" in reactElement.props;
 }
+
+export function capitalize<T extends string>(value: T): Capitalize<T> {
+  const [first, ...rest] = value;
+  return first.toUpperCase() +
+    rest.map((v) => v.toLowerCase()).join("") as never;
+}
