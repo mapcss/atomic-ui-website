@@ -66,11 +66,6 @@ jobs:
           name: dist
           path: dist
 
-      - name: debug
-        run: |
-          pwd
-          ls -a
-
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
