@@ -115,7 +115,7 @@ function _Head(
         rel="stylesheet"
         href="~/style/highlight.css"
       />
-      <script type="application/json+ld">
+      <script type="application/ld+json">
         {schemaStr}
       </script>
     </head>
